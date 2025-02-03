@@ -18,3 +18,6 @@
 ![image](https://github.com/user-attachments/assets/6ae844da-0458-403d-9b20-63fdd4d84292)
 
 해당 정보는 던담, 던파기어, 네오플 정보를 가지고 표출
+
+
+실행파일 https://drive.google.com/file/d/15Xe5gMdAOqZMCco_a_9vCtV1_8lR7Jk1/view?usp=sharing
