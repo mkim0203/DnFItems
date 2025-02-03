@@ -25,4 +25,4 @@
 해당 정보는 던담, 던파기어, 네오플 정보를 가지고 표출
 
 
-실행파일 https://drive.google.com/file/d/15Xe5gMdAOqZMCco_a_9vCtV1_8lR7Jk1/view?usp=sharing
+실행파일 v1.3 : https://drive.google.com/file/d/15Xe5gMdAOqZMCco_a_9vCtV1_8lR7Jk1/view?usp=sharing
