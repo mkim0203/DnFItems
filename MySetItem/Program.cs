@@ -19,15 +19,6 @@ namespace MySetItem
         {
             Main mainFm = new Main();
             mainFm.ShowDialog();
-
-            //if(args.Length == 2)
-            //{
-            //    string userId = args[0];
-            //    string serverName = args[1];
-
-            //    Program pg = new Program();
-            //    await pg.RunAsync(userId, serverName);
-            //}
         }
 
     }
