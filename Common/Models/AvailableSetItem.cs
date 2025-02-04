@@ -85,27 +85,31 @@ namespace Common.Models
 
         private string GetSetGrade(int setPoint)
         {
-            if (setPoint < 1200) return "레어";
-            if (setPoint < 1285) return "유니크Ⅰ";
-            if (setPoint < 1370) return "유니크Ⅱ";
-            if (setPoint < 1455) return "유니크Ⅲ";
-            if (setPoint < 1540) return "유니크Ⅳ";
-            if (setPoint < 1650) return "유니크Ⅴ";
-            if (setPoint < 1735) return "레전더리Ⅰ";
-            if (setPoint < 1820) return "레전더리Ⅱ";
-            if (setPoint < 1905) return "레전더리Ⅲ";
-            if (setPoint < 1990) return "레전더리Ⅳ";
-            if (setPoint < 2100) return "레전더리Ⅴ";
-            if (setPoint < 2185) return "에픽Ⅰ";
-            if (setPoint < 2270) return "에픽Ⅱ";
-            if (setPoint < 2355) return "에픽Ⅲ";
-            if (setPoint < 2440) return "에픽Ⅳ";
-            if (setPoint < 2550) return "에픽Ⅴ";
-            return "태초";
+            // setpoint 기준 레어리티 정보.
+            // setPoint 작은값에서 가장 높은 레어리티 가져옴.
+            var closest = CodeHelper.RarityCodes
+                .Where(entry => entry.Value < setPoint) 
+                .OrderByDescending(entry => entry.Value) 
+                .FirstOrDefault(); 
 
+            return closest.Key ?? "레어"; // 값이 없으면 기본값 반환
         }
 
-       
+        private KeyValuePair<string, int>? GetNextGrade(int setPoint)
+        {
+            if (setPoint > CodeHelper.RarityCodes.Max(x => x.Value)) { return null; }
+
+            // setpoint 기준 레어리티 정보.
+            // setPoint 작은값에서 가장 높은 레어리티 가져옴.
+            var closest = CodeHelper.RarityCodes
+                .Where(entry => entry.Value > setPoint)
+                .OrderBy(entry => entry.Value)
+                .FirstOrDefault();
+
+            return closest; // 값이 없으면 기본값 반환
+        }
+
+
 
         public void SettingPoint(Common.Models.DfGear.ItemDetail data)
         {
@@ -230,6 +234,8 @@ $@"{SetItemName}
 
         public string OutputHtml()
         {
+            var nextGradeAllPoint = GetNextGrade(AllPoint);
+            var nextGradeMaxAllPoint = GetNextGrade(MaxAllPoint);
             string retValue =
 $@"<tr>
     <th rowspan='2'>{SetItemName}</th>
@@ -245,7 +251,9 @@ $@"<tr>
     <td class='{CodeHelper.GetRarityColor(RarityRing)}'>{Ring}</td>
     <td class='{CodeHelper.GetRarityColor(RarityEaring)}'>{Earing}</td>
     <td class='{CodeHelper.GetRarityColor(RaritySton)}'>{Ston}</td>
-    <td{(IsTop ? " class='table-primary'" : "")}>{AllPoint}{(IsTop ? "(*)" : "")}</td><td>{GetSetGrade(AllPoint)}</td>
+    <td{(IsTop ? " class='table-primary'" : "")}>{AllPoint}{(IsTop ? "(*)" : "")}</td>
+    <td class='{CodeHelper.GetRarityColor(GetSetGrade(AllPoint))}'>{GetSetGrade(AllPoint)}</td>
+    <td>{(nextGradeAllPoint == null ? "" : (nextGradeAllPoint.Value.Value - AllPoint).ToString())}</td>
 </tr>
 <tr>
     <td>조율최대</td>
@@ -260,7 +268,9 @@ $@"<tr>
     <td class='{CodeHelper.GetRarityColor(RarityRing)}'>{MaxRing}</td>
     <td class='{CodeHelper.GetRarityColor(RarityEaring)}'>{MaxEaring}</td>
     <td class='{CodeHelper.GetRarityColor(RaritySton)}'>{MaxSton}</td>
-    <td>{MaxAllPoint}</td><td>{GetSetGrade(MaxAllPoint)}</td>
+    <td>{MaxAllPoint}</td>
+    <td class='{CodeHelper.GetRarityColor(GetSetGrade(MaxAllPoint))}'>{GetSetGrade(MaxAllPoint)}</td>
+    <td>{(nextGradeMaxAllPoint == null ? "" : (nextGradeMaxAllPoint.Value.Value - MaxAllPoint).ToString())}</td>
 </tr>";
             return retValue;
         }

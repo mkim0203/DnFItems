@@ -126,6 +126,7 @@
 
 					<th>point</th>
 					<th>세트등급</th>
+					<th>다음등급필요포인트</th>
 				</tr>
 			</thead>
 			{{AvailableSetItem}}

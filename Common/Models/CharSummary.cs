@@ -36,9 +36,29 @@ namespace Common.Models
         {
             if(DetailInfo != null && BaseInfo != null)
             {
-                return $"{BaseInfo.SetPoint} - {DetailInfo.SetsName} ( {DetailInfo.SetsGrade} )";
+                var nextGrade = GetNextGrade(Convert.ToInt32(BaseInfo.SetPoint));
+                string nextGradeInfo = string.Empty;
+                if (nextGrade != null) {
+                    nextGradeInfo = $" / 다음등급 : {nextGrade.Value.Key} 필요포인트({nextGrade.Value.Value - Convert.ToInt32(BaseInfo.SetPoint)})";
+                }
+
+                return $"{BaseInfo.SetPoint} - {DetailInfo.SetsName} ( {DetailInfo.SetsGrade} )  {nextGradeInfo}";
             }
             return string.Empty;
+        }
+
+        private KeyValuePair<string, int>? GetNextGrade(int setPoint)
+        {
+            if (setPoint > CodeHelper.RarityCodes.Max(x => x.Value)) { return null; }
+
+            // setpoint 기준 레어리티 정보.
+            // setPoint 작은값에서 가장 높은 레어리티 가져옴.
+            var closest = CodeHelper.RarityCodes
+                .Where(entry => entry.Value > setPoint)
+                .OrderBy(entry => entry.Value)
+                .FirstOrDefault();
+
+            return closest; // 값이 없으면 기본값 반환
         }
 
         public string GetUseItemSummaryHtml()
