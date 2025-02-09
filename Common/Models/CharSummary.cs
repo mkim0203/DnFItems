@@ -72,10 +72,11 @@ namespace Common.Models
     <td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.Itemid}'></td>
     <td>{item.Slot}</td>
     <td>{item.ReinforceNum} {item.ReinforceType}</td>
-    <td>{item.name}</td>
+    <td>{item.Name}{(string.IsNullOrWhiteSpace(item.FusionName) == false ? $"<br/>({item.FusionRarity}){item.FusionName}" : "")}</td>
     <td class='{CodeHelper.GetRarityColor(item.Rarity)}'>{item.Rarity}</td>
     <td>{item.ItemUp}</td>
 </tr>";
+
                     sb.AppendLine(htmlText);
                 }
             }

@@ -13,7 +13,7 @@ namespace DnFItems
         [TestMethod]
         public async Task GetCharInfoAsyncTest()
         {
-            string userId = "비상마커";
+            string userId = "상자속냥이";
             string serverName = "디레지에";
             Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
 
@@ -24,7 +24,7 @@ namespace DnFItems
         [TestMethod]
         public async Task GetCharDetailInfoAsyncTest()
         {
-            string userId = "비상마커";
+            string userId = "상자속냥이";
             string serverName = "디레지에";
             Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
 

@@ -55,6 +55,7 @@
     <Compile Include="Models\DfGear\CharResult.cs" />
     <Compile Include="Models\DfGear\TimeLineInfo.cs" />
     <Compile Include="Models\DfGear\TimeLineResult.cs" />
+    <Compile Include="Models\FusionItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\DfDunDamHelper.cs" />
     <Compile Include="Utils\DfGearHelper.cs" />

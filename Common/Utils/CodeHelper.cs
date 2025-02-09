@@ -51,6 +51,24 @@ namespace Common.Utils
             return "";
         }
 
+        public static string GetFusionRarityColor(int setPoint)
+        {
+            string retValue = "";
+            switch(setPoint)
+            {
+                case 20:
+                    retValue = "uni";
+                    break;
+                case 60:
+                    retValue = "epi";
+                    break;
+                default:
+                    break;
+
+            }
+            return retValue;
+        }
+
         public static Dictionary<string, int> RarityCodes = new Dictionary<string, int>()
         {
             { RarityCode.유니크Ⅰ.ToString(), (int)RarityCode.유니크Ⅰ },

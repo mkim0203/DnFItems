@@ -9,6 +9,19 @@ namespace Common.Models
 {
     public class AvailableSetItem
     {
+
+        public void SetFusionItem(FusionItem item)
+        {
+            if (item != null)
+            {
+                FusionHandAndShoulder = item.HandAndShoulder;
+                FusionCoat = item.Coat;
+                FusionPants = item.Pants;
+                FusionBelt = item.Belt;
+                FusionShoes = item.Shoes;
+            }
+        }
+
         public string SetItemName { get; set; }
         // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
         public int HandAndShoulder { get; set; } = 115;
@@ -24,11 +37,18 @@ namespace Common.Models
         public int Earing { get; set; } = 115;
         public int Ston { get; set; } = 115;
 
+        public int FusionHandAndShoulder { get; set; } = 0;
+        public int FusionCoat { get; set; } = 0;
+        public int FusionPants { get; set; } = 0;
+        public int FusionBelt { get; set; } = 0;
+        public int FusionShoes { get; set; } = 0;
+
         public int AllPoint
         {
             get
             {
-                int sum = HandAndShoulder + Coat + Pants + Belt + Shoes + Brac + Neck + Sup + Ring + Earing + Ston;
+                int sum = HandAndShoulder + Coat + Pants + Belt + Shoes + Brac + Neck + Sup + Ring + Earing + Ston
+                    + FusionHandAndShoulder + FusionCoat + FusionPants + FusionBelt + FusionShoes;
                 return sum;
             }
         }
@@ -50,7 +70,8 @@ namespace Common.Models
         {
             get
             {
-                int sum = MaxHandAndShoulder + MaxCoat + MaxPants + MaxBelt + MaxShoes + MaxBrac + MaxNeck + MaxSup + MaxRing + MaxEaring + MaxSton;
+                int sum = MaxHandAndShoulder + MaxCoat + MaxPants + MaxBelt + MaxShoes + MaxBrac + MaxNeck + MaxSup + MaxRing + MaxEaring + MaxSton
+                    + FusionHandAndShoulder + FusionCoat + FusionPants + FusionBelt + FusionShoes;
                 return sum;
             }
         }
@@ -236,6 +257,7 @@ $@"{SetItemName}
         {
             var nextGradeAllPoint = GetNextGrade(AllPoint);
             var nextGradeMaxAllPoint = GetNextGrade(MaxAllPoint);
+
             string retValue =
 $@"<tr>
     <th rowspan='2'>{SetItemName}</th>
@@ -251,6 +273,13 @@ $@"<tr>
     <td class='{CodeHelper.GetRarityColor(RarityRing)}'>{Ring}</td>
     <td class='{CodeHelper.GetRarityColor(RarityEaring)}'>{Earing}</td>
     <td class='{CodeHelper.GetRarityColor(RaritySton)}'>{Ston}</td>
+
+    <td class='{CodeHelper.GetFusionRarityColor(FusionHandAndShoulder)}'>{FusionHandAndShoulder}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionCoat)}'>{FusionCoat}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionPants)}'>{FusionPants}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionBelt)}'>{FusionBelt}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionShoes)}'>{FusionShoes}</td>
+
     <td{(IsTop ? " class='table-primary'" : "")}>{AllPoint}{(IsTop ? "(*)" : "")}</td>
     <td class='{CodeHelper.GetRarityColor(GetSetGrade(AllPoint))}'>{GetSetGrade(AllPoint)}</td>
     <td>{(nextGradeAllPoint == null ? "" : (nextGradeAllPoint.Value.Value - AllPoint).ToString())}</td>
@@ -268,6 +297,13 @@ $@"<tr>
     <td class='{CodeHelper.GetRarityColor(RarityRing)}'>{MaxRing}</td>
     <td class='{CodeHelper.GetRarityColor(RarityEaring)}'>{MaxEaring}</td>
     <td class='{CodeHelper.GetRarityColor(RaritySton)}'>{MaxSton}</td>
+   
+    <td class='{CodeHelper.GetFusionRarityColor(FusionHandAndShoulder)}'>{FusionHandAndShoulder}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionCoat)}'>{FusionCoat}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionPants)}'>{FusionPants}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionBelt)}'>{FusionBelt}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionShoes)}'>{FusionShoes}</td>
+
     <td>{MaxAllPoint}</td>
     <td class='{CodeHelper.GetRarityColor(GetSetGrade(MaxAllPoint))}'>{GetSetGrade(MaxAllPoint)}</td>
     <td>{(nextGradeMaxAllPoint == null ? "" : (nextGradeMaxAllPoint.Value.Value - MaxAllPoint).ToString())}</td>

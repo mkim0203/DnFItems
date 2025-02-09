@@ -52,6 +52,8 @@ namespace Common.Models.DfDunDam
       "code": "7_cbow",
       "lv105Explain": "",
       "siroco": "",
+      "sirocoR": "",
+      "sirocoReal": "",
       "refine": "4",
       "slot": "무기",
       "ozma": "",
@@ -71,9 +73,20 @@ namespace Common.Models.DfDunDam
         [JsonProperty("reinforceNum")]
         public string ReinforceNum { get; set; }
         [JsonProperty("name")]
-        public string name { get; set; }
+        public string Name { get; set; }
+        /// <summary>
+        /// 융합장비 등급
+        /// </summary>
+        [JsonProperty("sirocoR")]
+        public string FusionRarity { get; set; }
+        /// <summary>
+        /// 융합장비 이름
+        /// </summary>
+        [JsonProperty("sirocoReal")]
+        public string FusionName { get; set; }
         [JsonProperty("slot")]
         public string Slot {  get; set; }
+        
         /// <summary>
         /// 증폭 or 강화
         /// </summary>
