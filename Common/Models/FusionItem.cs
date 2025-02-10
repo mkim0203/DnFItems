@@ -15,7 +15,7 @@ namespace Common.Models
         public int HandAndShoulder { get; set; }
         public int Coat { get; set; }
         public int Pants { get; set; }
-        public int Belt { get; set; } = 20;
+        public int Belt { get; set; }
         public int Shoes { get; set; }
 
         public int AllPoint

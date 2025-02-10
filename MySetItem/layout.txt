@@ -106,7 +106,7 @@
 	
 	
 	<h3>세트별 가능 등급. (기본 유니크)</h3>
-		
+	<h5>장비는 기본 유니크 착용을 가정하게 계산, 융합석은 던담에서 조회한 착용중인 세트가 있을때 기준으로 계산</h5>
 	<div class="col-13">
 		<table class="table table-striped table-bordered" id="SetItemsInfo">
 			<thead>

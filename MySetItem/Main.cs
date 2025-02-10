@@ -163,6 +163,25 @@ namespace MySetItem
 
 
 
+                // 던담 정보 조회
+                Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
+                Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
+                Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+                Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+
+                // 던담에서 융합석 정보 가져오기
+                var charFusionItem = charSummary.GetFusionItem();
+
+                // 착용 가능 세트정보에 융합석 정보 넣기
+                // 융합석은 변환가능하기 때문에 착용중인 융합석 기준으로 넘김
+                foreach(var item in allAvailableSetItem)
+                {
+                    item.SetFusionItem(charFusionItem);
+                }
+
+
+
+
                 StringBuilder outputAvailableSetItem = new StringBuilder();
 
                 foreach (var setItem in allAvailableSetItem)
@@ -170,12 +189,6 @@ namespace MySetItem
                     outputAvailableSetItem.AppendLine(setItem.OutputHtml());
                 }
 
-
-                // 던담 정보 조회
-                Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-                Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
-                Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-                Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
 
                 string htmlDoc = File.ReadAllText("layout.txt");
                 string outputHtml = htmlDoc.Replace("{{CharInfo}}", $"{userId} / {serverName}")

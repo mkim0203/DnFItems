@@ -83,6 +83,42 @@ namespace Common.Models
             return sb.ToString();
         }
 
+        public FusionItem GetFusionItem()
+        {
+            FusionItem retValue = new FusionItem();
+            if (DetailInfo != null)
+            {
+                foreach (var item in DetailInfo.UseItems)
+                {
+                    if (string.IsNullOrWhiteSpace(item.FusionName)) continue;
+                        
+                    if (CodeHelper.FusionSetNames.Exists(x => item.FusionName.StartsWith(x))) {
+                        switch (item.Slot)
+                        {
+                            case "상의":
+                                retValue.Coat = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "머리어깨":
+                                retValue.HandAndShoulder = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "하의":
+                                retValue.Pants = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "신발":
+                                retValue.Shoes = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "벨트":
+                                retValue.Belt = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                        }
+                    }
+                    
+                }
+                  
+            }
+            return retValue;
+        }
+
         public string GetCharacterKey()
         {
             if(BaseInfo != null) { return BaseInfo.CharacterKey; }

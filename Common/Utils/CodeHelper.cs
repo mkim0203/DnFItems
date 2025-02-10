@@ -88,6 +88,22 @@ namespace Common.Utils
             { RarityCode.에픽Ⅴ.ToString(), (int)RarityCode.에픽Ⅴ },
             { RarityCode.태초.ToString(), (int)RarityCode.태초 }
         };
+
+        public static List<string> FusionSetNames = new List<string>()
+        {
+            "암영",
+            "영혼",
+            "황금",
+            "용투",
+            "정화",
+            "행운",
+            "돌파",
+            "자연",
+            "전장",
+            "영원",
+            "사냥",
+            "영역"
+        };
     }
 
     public enum RarityCode
