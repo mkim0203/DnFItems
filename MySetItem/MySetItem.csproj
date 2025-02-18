@@ -68,6 +68,9 @@
     <Content Include="history.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="layoutAdven.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="layout.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

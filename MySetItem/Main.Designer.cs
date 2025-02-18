@@ -63,6 +63,7 @@
             this.cbServer.Font = new System.Drawing.Font("맑은 고딕", 13.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.cbServer.FormattingEnabled = true;
             this.cbServer.Items.AddRange(new object[] {
+            "모험단",
             "카인",
             "디레지에",
             "시로코",

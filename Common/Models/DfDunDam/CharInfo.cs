@@ -59,6 +59,9 @@ namespace Common.Models.DfDunDam
       "key": "47481a771b59d30e448d7e5dde0a8aa4"
          */
 
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
         [JsonProperty("key")]
         public string CharacterKey { get; set; }
         [JsonProperty("server")]

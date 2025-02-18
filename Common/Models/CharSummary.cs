@@ -32,6 +32,29 @@ namespace Common.Models
             return string.Empty;
         }
 
+        public string GetSetName()
+        {
+            if(DetailInfo != null) { return DetailInfo.SetsName; }
+            return string.Empty;
+        }
+
+        public string GetSetGrade()
+        {
+            if (DetailInfo != null) { return DetailInfo.SetsGrade; }
+            return string.Empty;
+        }
+
+        public int GetNextSetPoint()
+        {
+            if (DetailInfo != null && BaseInfo != null)
+            {
+                var nextGrade = GetNextGrade(Convert.ToInt32(BaseInfo.SetPoint));
+                
+                return nextGrade.Value.Value - Convert.ToInt32(BaseInfo.SetPoint);
+            }
+            return 0;
+        }
+
         public string GetUseItemTitleSummaryHtml()
         {
             if(DetailInfo != null && BaseInfo != null)

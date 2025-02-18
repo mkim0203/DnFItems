@@ -8,7 +8,9 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,9 +46,9 @@ namespace MySetItem
 
         private async void btnSearch_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtName.Text))
+            if (string.IsNullOrEmpty(txtName.Text) || string.IsNullOrEmpty(cbServer.Text))
             {
-                MessageBox.Show("캐릭터 명 필요.");
+                MessageBox.Show("캐릭터 명 / 서버 명 필요.");
                 return;
             }
 
@@ -58,7 +60,14 @@ namespace MySetItem
 
             try
             {
-                await RunAsync(name, serverName);
+                if (serverName.Equals("모험단"))
+                {
+                    await RunAdvenAsync(name, serverName);
+                }
+                else
+                {
+                    await RunAsync(name, serverName);
+                }
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message + Environment.NewLine + "입력한 캐릭터가 던담, 던파기어에서 조회된 내역이 없거나 잘못된경우 입니다. 확인후 다시 해보세요.", "알람");
@@ -220,6 +229,59 @@ namespace MySetItem
             {
                 //throw new Exception("입력한 캐릭터가 던담, 던파기어에서 조회된 내역이 없거나 잘못된경우 입니다. 확인후 다시 해보세요.");
             }
+        }
+
+        public async Task RunAdvenAsync(string userId, string advenName)
+        {
+            DateTime stdt = DateTime.Now;
+            // 던담 정보 조회
+            Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
+            var charInfos = await dundam.GetAdvenAsync(userId, advenName);
+
+            StringBuilder outputInfos = new StringBuilder();
+
+            int index = 0;
+            foreach (var charInfo in charInfos)
+            {
+                lblStat.Text = $"{++index} / {charInfos.Count} 조회중";
+                Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+                Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+
+                Console.WriteLine($"{charInfo.Name} {(DateTime.Now - stdt).TotalSeconds}");
+
+                /*
+                 * <th>캐릭터명</th>
+				<th>세트 이름</th>
+				<th>세트 포인트</th>
+				<th>세트 등급</th>
+				<th>다음 필요 포인트</th>
+                 */
+                outputInfos.AppendLine($"<tr>");
+                //<div class="col-11">
+                outputInfos.AppendLine($"<td>{charInfo.Name}</td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
+                outputInfos.AppendLine($"<td>{charInfo.SetPoint}</td>");
+                outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetNextSetPoint()}</td>");
+
+                outputInfos.AppendLine($"</tr>");
+            }
+
+            string htmlDoc = File.ReadAllText("layoutAdven.txt");
+            string outputHtml = htmlDoc.Replace("{{CharsSummary}}", outputInfos.ToString())
+                   
+                    ;
+
+            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+
+            File.WriteAllText(fileName, outputHtml);
+
+            // 기본 브라우저에서 HTML 파일 열기
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
+            });
         }
     }
 }

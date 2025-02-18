@@ -37,6 +37,9 @@ namespace Common.Utils
                 case "바칼":
                     serverId = "bakal";
                     break;
+                case "모험단":
+                    serverId = "adven";
+                    break;
             }
 
             return serverId;
