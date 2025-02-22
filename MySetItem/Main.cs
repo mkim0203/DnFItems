@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,22 +23,23 @@ namespace MySetItem
     {
         public string _dfGearUrl = "https://api.dfgear.xyz";
         public string _dfDunDamUrl = "https://dundam.xyz";
+        public string _dfApiUrl = "https://api.neople.co.kr";
 
-        public List<string> SetItems = new List<string>()
-        {
-            "영원히 이어지는 황금향 세트",
-            "칠흑의 정화 세트",
-            "세렌디피티 세트",
-            "한계를 넘어선 에너지 세트",
-            "소울 페어리 세트",
-            "압도적인 자연 세트",
-            "고대 전장의 발키리 세트",
-            "에테리얼 오브 아츠 세트",
-            "그림자에 숨은 죽음 세트",
-            "무리 사냥의 길잡이 세트",
-            "마력의 영역 세트",
-            "용투장의 난 세트"
-        };
+        //public List<string> SetItems = new List<string>()
+        //{
+        //    "영원히 이어지는 황금향 세트",
+        //    "칠흑의 정화 세트",
+        //    "세렌디피티 세트",
+        //    "한계를 넘어선 에너지 세트",
+        //    "소울 페어리 세트",
+        //    "압도적인 자연 세트",
+        //    "고대 전장의 발키리 세트",
+        //    "에테리얼 오브 아츠 세트",
+        //    "그림자에 숨은 죽음 세트",
+        //    "무리 사냥의 길잡이 세트",
+        //    "마력의 영역 세트",
+        //    "용투장의 난 세트"
+        //};
 
         public Main()
         {
@@ -70,7 +72,7 @@ namespace MySetItem
                 }
             }
             catch (Exception ex) {
-                MessageBox.Show(ex.Message + Environment.NewLine + "입력한 캐릭터가 던담, 던파기어에서 조회된 내역이 없거나 잘못된경우 입니다. 확인후 다시 해보세요.", "알람");
+                MessageBox.Show(ex.Message + Environment.NewLine + "조회중 오류가 발생했습니다. 입력정보를 다시 확인후 재시도 해보세요.", "알람");
             }
             btnSearch.Enabled = true;
             lblStat.Text = "완료";
@@ -150,7 +152,7 @@ namespace MySetItem
                 List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
 
                 List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
-                foreach (string setName in SetItems)
+                foreach (string setName in CodeHelper.SetItems)
                 {
                     AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
                     foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
@@ -172,13 +174,19 @@ namespace MySetItem
 
 
 
-                // 던담 정보 조회
-                Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-                Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
-                Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-                Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+                // 던담 정보 조회. 제거
+                //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
+                //Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
+                //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+                //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
 
-                // 던담에서 융합석 정보 가져오기
+                // 던파 api 조회
+                Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
+                Common.Models.DnfApi.CharInfo charInfo = await dnfApi.GetCharInfoAsync(userId, serverName);
+                Common.Models.DnfApi.EquipmentResult equipment = await dnfApi.GetEquipmentsAsync(charInfo.CharacterId, serverName);
+                Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfo, equipment);
+
+                // 융합석 정보 가져오기
                 var charFusionItem = charSummary.GetFusionItem();
 
                 // 착용 가능 세트정보에 융합석 정보 넣기
@@ -212,6 +220,7 @@ namespace MySetItem
                         .Replace("{{RarityY}}", rarityY)
                         .Replace("{{ChannelX}}", channelX)
                         .Replace("{{ChannelY}}", channelY)
+                        .Replace("{{CharName}}", userId)
                         ;
 
                 string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
@@ -244,8 +253,14 @@ namespace MySetItem
             foreach (var charInfo in charInfos)
             {
                 lblStat.Text = $"{++index} / {charInfos.Count} 조회중";
-                Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-                Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+                //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+                //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+
+                // 던파 api 조회
+                Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
+                Common.Models.DnfApi.CharInfo charInfoApi = await dnfApi.GetCharInfoAsync(charInfo.Name, charInfo.ServerId, true);
+                Common.Models.DnfApi.EquipmentResult equipment = await dnfApi.GetEquipmentsAsync(charInfoApi.CharacterId, charInfo.ServerId, true);
+                Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfoApi, equipment);
 
                 Console.WriteLine($"{charInfo.Name} {(DateTime.Now - stdt).TotalSeconds}");
 
@@ -258,9 +273,9 @@ namespace MySetItem
                  */
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
-                outputInfos.AppendLine($"<td>{charInfo.Name}</td>");
+                outputInfos.AppendLine($"<td><a href='https://dundam.xyz/character?server={charInfo.ServerId}&key={charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
-                outputInfos.AppendLine($"<td>{charInfo.SetPoint}</td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetNextSetPoint()}</td>");
 

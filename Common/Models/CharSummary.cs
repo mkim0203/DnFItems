@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Common.Models
 {
-    public class CharSummary
+    public class CharSummary : ICharSummary
     {
         public CharSummary(CharInfo charInfo, CharDetailInfo charDetailInfo)
         {
@@ -152,6 +152,20 @@ namespace Common.Models
         {
             if (BaseInfo != null) { return BaseInfo.ServerId; }
             return string.Empty;
+        }
+
+        public int GetSetPoint()
+        {
+            try
+            {
+                if (BaseInfo != null) { return Convert.ToInt32(BaseInfo.SetPoint); }
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 0;
+            }
         }
     }
 }

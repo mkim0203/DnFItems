@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DfGearHelperTest.cs" />
     <Compile Include="DfDunDamHelperTest.cs" />
+    <Compile Include="DnfApiHelperTest.cs" />
     <Compile Include="Utils\DfGearHelper.cs" />
     <Compile Include="Utils\HttpClientHelper.cs" />
     <Compile Include="UnitTest1.cs" />

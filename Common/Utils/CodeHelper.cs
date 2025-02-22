@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -107,6 +108,30 @@ namespace Common.Utils
             "사냥",
             "영역"
         };
+
+        public static List<string> SetItems = new List<string>()
+        {
+            "영원히 이어지는 황금향 세트",
+            "칠흑의 정화 세트",
+            "세렌디피티 세트",
+            "한계를 넘어선 에너지 세트",
+            "소울 페어리 세트",
+            "압도적인 자연 세트",
+            "고대 전장의 발키리 세트",
+            "에테리얼 오브 아츠 세트",
+            "그림자에 숨은 죽음 세트",
+            "무리 사냥의 길잡이 세트",
+            "마력의 영역 세트",
+            "용투장의 난 세트"
+        };
+    }
+
+    public static class ExtensionMethod
+    {
+        public static string UrlEncoding(this string text)
+        {
+            return System.Web.HttpUtility.UrlEncode(text);
+        }
     }
 
     public enum RarityCode
