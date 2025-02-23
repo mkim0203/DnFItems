@@ -96,7 +96,7 @@ namespace MySetItem
                 // SetItemName 기준으로 그룹화
                 var groupedItems = result
                         .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
-                        .OrderBy(item => item.ItemType)
+                        .OrderBy(item => item.ItemName)
                         .ThenByDescending(item => item.ItemRarityLevel)
                         .ThenByDescending(item => item.Date)
                         .GroupBy(item => item.ConvertSetItem)
