@@ -25,4 +25,4 @@
 해당 정보는 네오플 정보를 가지고 표출
 
 
-실행파일 v1.7 : [https://drive.google.com/file/d/1RfzfdDmilUMI6ZDIK1Clp5yvyy0zPdoy/view?usp=drive_link](https://drive.google.com/file/d/16VHEVg8ZAcHM-qugTIvJOD_Ek-Qo1pl0/view?usp=drive_link)
+실행파일 v1.7 : https://drive.google.com/file/d/1-3BDS7sDFUJp1ZXztYZxJ4DUuezDulW8/view?usp=drive_link
