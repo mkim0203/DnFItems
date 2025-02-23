@@ -128,6 +128,8 @@ namespace Common.Models
                     // 아이템 이름으로 구분
                     bool findItem = CodeHelper.SetItemWords.Any(x => ItemName.Contains(x));
                     if(findItem) return true;
+
+                    if (string.IsNullOrEmpty(DungeonName)) return false;
                     // 던전 이름으로 구분
                     bool findDungeon = CodeHelper.AllDungeonNames.Any(x => DungeonName.Equals(x));
                     if(findDungeon) return true;

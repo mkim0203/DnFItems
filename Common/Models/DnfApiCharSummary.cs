@@ -111,11 +111,12 @@ namespace Common.Models
         public int GetNextSetPoint()
         {
             var target = GetMaxSetItemInfoItem();
-            if (target != null)
+            if (target?.Active?.SetPoint != null)
             {
                 int setPoint = target.Active.SetPoint.Current;
                 var nextGrade = GetNextGrade(setPoint);
 
+                if (nextGrade.Value.Value == 0) return 0;
                 return nextGrade.Value.Value - setPoint;
             }
            
@@ -178,7 +179,7 @@ namespace Common.Models
                 string nextGradeInfo = string.Empty;
                 if (nextGrade != null)
                 {
-                    nextGradeInfo = $" / 다음등급 : {nextGrade.Value.Key} 필요포인트({nextGrade.Value.Value - setPoint})";
+                    nextGradeInfo = $" / 다음등급 : {nextGrade.Value.Key} 필요포인트({GetNextSetPoint()})";
                 }
 
                 return $"{setPoint} - {target.SetItemName} ( {target.SetItemRarityName} )  {nextGradeInfo}";
@@ -189,7 +190,7 @@ namespace Common.Models
         public int GetSetPoint()
         {
             var target = GetMaxSetItemInfoItem();
-            if (target != null)
+            if (target?.Active?.SetPoint != null)
             {
                 int setPoint = target.Active.SetPoint.Current;
                 return setPoint;

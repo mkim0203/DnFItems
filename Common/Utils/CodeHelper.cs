@@ -49,6 +49,7 @@ namespace Common.Utils
 
         public static string GetRarityColor(string targetRarity)
         {
+            if (string.IsNullOrWhiteSpace(targetRarity)) return string.Empty;
             if (targetRarity.StartsWith("유니크")) return "uni";
             if (targetRarity.StartsWith("레전더리")) return "leg";
             if (targetRarity.StartsWith("에픽")) return "epi";
