@@ -189,6 +189,52 @@
 			</td>
 		</tr>
 	</table>
+	<table>
+		<tr>
+			<td>
+				<div id="hellPlot" style="width:100%;max-width:400px"></div>
+
+				<script>
+				const hellXArray = {{HellX}};
+				const hellYArray = {{HellY}};
+
+				const hellLayout = {title:"획득 정보 종말"};
+
+				const hellData = [{labels:hellXArray, values:hellYArray, type:"pie", textinfo: 'label+value'}];
+
+				Plotly.newPlot("hellPlot", hellData, hellLayout);
+				</script>
+			</td>
+			<td>
+				<div id="spHellPlot" style="width:100%;max-width:400px"></div>
+
+				<script>
+				const spHellXArray = {{SpHellX}};
+				const spHellYArray = {{SpHellY}};
+
+				const spHellLayout = {title:"획득 정보 심연 : 종말"};
+
+				const spHellData = [{labels:spHellXArray, values:spHellYArray, type:"pie", textinfo: 'label+value'}];
+
+				Plotly.newPlot("spHellPlot", spHellData, spHellLayout);
+				</script>
+			</td>
+			<td>
+				<div id="weeklyPlot" style="width:100%;max-width:400px"></div>
+
+				<script>
+				const weeklyXArray = {{WeeklyX}};
+				const weeklyYArray = {{WeeklyY}};
+
+				const weeklyLayout = {title:"획득 정보 주간던전"};
+
+				const weeklyData = [{labels:weeklyXArray, values:weeklyYArray, type:"pie", textinfo: 'label+value'}];
+
+				Plotly.newPlot("weeklyPlot", weeklyData, weeklyLayout);
+				</script>
+			</td>
+		</tr>
+	</table>
 		
 
 

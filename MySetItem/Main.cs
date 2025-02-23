@@ -1,4 +1,5 @@
 ﻿using Common.Models;
+using Common.Services;
 using Common.Utils;
 using Newtonsoft.Json;
 using System;
@@ -82,8 +83,12 @@ namespace MySetItem
 
         public async Task RunAsync(string userId, string serverName)
         {
+            // 던파기어 제거
             Common.Utils.DfGearHelper gear = new Common.Utils.DfGearHelper(_dfGearUrl);
-            List<Common.Models.DfGear.ItemDetail> result = await gear.GetTimeLineItems(userId, serverName);
+            //List<Common.Models.DfGear.ItemDetail> result = await gear.GetTimeLineItems(userId, serverName);
+
+            List<TimeLineItem> result = await DnfApiService.GetAllTimeLineAsync(userId, serverName);
+
 
             if (result != null && result.Count > 0)
             {
@@ -102,12 +107,12 @@ namespace MySetItem
                 {
                     outputListSetItem.AppendLine($"<h4>{group.Key}</h4>");
                     //<div class="col-11">
-                    outputListSetItem.AppendLine($"<div class='col-8'>");
+                    outputListSetItem.AppendLine($"<div class='col-10'>");
                     outputListSetItem.AppendLine($"<table class='table table-bordered'>");
-                    outputListSetItem.AppendLine($"<tr><th>아이템</th><th>이름</th><th>등급</th><th>부위</th><th>채널</th><th>획득 일</th></tr>");
+                    outputListSetItem.AppendLine($"<tr><th>아이템</th><th>이름</th><th>등급</th><th>부위</th><th>채널</th><th>던전</th><th>획득 방법</th><th>획득 일</th></tr>");
                     foreach (var item in group)
                     {
-                        outputListSetItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.ItemType}</td><td>{item.Channel}</td><td>{item.Date}</td></tr>");
+                        outputListSetItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
                     }
                     outputListSetItem.AppendLine($"</table></div><br/>");
                 }
@@ -127,7 +132,7 @@ namespace MySetItem
 
                 // 채널별 갯수
                 var channelGroup = result
-                        .GroupBy(item => item.Channel)
+                        .GroupBy(item => item.GetChannelInfo)
                         .Select(group => new
                         {
                             Channel = group.Key,
@@ -138,28 +143,85 @@ namespace MySetItem
                 string channelX = JsonConvert.SerializeObject(channelGroup.Select(x => x.Channel));
                 string channelY = JsonConvert.SerializeObject(channelGroup.Select(x => x.Count));
 
+                var hellGroup = result
+                        .Where(x => x.IsBaseHell)
+                        .GroupBy(item => item.ItemRarity)
+                        .Select(group => new
+                        {
+                            Rarity = group.Key,
+                            Count = group.Count()
+                        }).Take(10)
+                        .ToList();
+
+                string hellX = JsonConvert.SerializeObject(hellGroup.Select(x => x.Rarity));
+                string hellY = JsonConvert.SerializeObject(hellGroup.Select(x => x.Count));
+
+                var spHellGroup = result
+                       .Where(x => x.IsSpHell)
+                       .GroupBy(item => item.ItemRarity)
+                       .Select(group => new
+                       {
+                           Rarity = group.Key,
+                           Count = group.Count()
+                       }).Take(10)
+                       .ToList();
+
+                string spHellX = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Rarity));
+                string spHellY = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Count));
+
+                var weeklyGroup = result
+                       .Where(x => x.IsWeekly)
+                       .GroupBy(item => item.DungeonName)
+                       .Select(group => new
+                       {
+                           DungeonName = group.Key,
+                           Count = group.Count()
+                       }).Take(10)
+                       .ToList();
+
+                string weeklyX = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.DungeonName));
+                string weeklyY = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.Count));
+
                 // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
-                // ConvertSetItem & ItemType 기준으로 그룹화 후 SetPoint가 가장 높은 항목 선택
+                // ConvertSetItem & Slot 기준으로 그룹화 후 SetPoint가 가장 높은 항목 선택
                 var bestItems = result
                     .Where(item => string.IsNullOrEmpty(item.ConvertSetItem) == false)
-                    .GroupBy(item => new { item.ConvertSetItem, item.ItemType })
+                    .GroupBy(item => new { item.ConvertSetItem, item.Slot })
                     .Select(group => group.OrderByDescending(item => item.SetPoint).First())
                     .OrderBy(x => x.ConvertSetItem)
                     .ToList();
-                 
+
 
                 // 고유 아이템
-                List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
+                //List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
+
+                //List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
+                //foreach (string setName in CodeHelper.SetItems)
+                //{
+                //    AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
+                //    foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
+                //    {
+                //        addItem.SettingPoint(item);
+                //    }
+                //    foreach (Common.Models.DfGear.ItemDetail item in commonItems)
+                //    {
+                //        addItem.SettingPoint(item);
+                //    }
+
+                //    allAvailableSetItem.Add(addItem);
+                //}
+
+                List<Common.Models.TimeLineItem> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
 
                 List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
                 foreach (string setName in CodeHelper.SetItems)
                 {
                     AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
-                    foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
+                    foreach (Common.Models.TimeLineItem item in bestItems.Where(x => x.SetItemName == setName))
                     {
                         addItem.SettingPoint(item);
                     }
-                    foreach (Common.Models.DfGear.ItemDetail item in commonItems)
+                    foreach (Common.Models.TimeLineItem item in commonItems)
                     {
                         addItem.SettingPoint(item);
                     }
@@ -197,8 +259,6 @@ namespace MySetItem
                 }
 
 
-
-
                 StringBuilder outputAvailableSetItem = new StringBuilder();
 
                 foreach (var setItem in allAvailableSetItem)
@@ -220,6 +280,12 @@ namespace MySetItem
                         .Replace("{{RarityY}}", rarityY)
                         .Replace("{{ChannelX}}", channelX)
                         .Replace("{{ChannelY}}", channelY)
+                        .Replace("{{HellX}}", hellX)
+                        .Replace("{{HellY}}", hellY)
+                        .Replace("{{SpHellX}}", spHellX)
+                        .Replace("{{SpHellY}}", spHellY)
+                        .Replace("{{WeeklyX}}", weeklyX)
+                        .Replace("{{WeeklyY}}", weeklyY)
                         .Replace("{{CharName}}", userId)
                         ;
 

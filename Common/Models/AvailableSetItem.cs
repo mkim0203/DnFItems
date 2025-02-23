@@ -244,6 +244,118 @@ namespace Common.Models
             }
         }
 
+        public void SettingPoint(Common.Models.TimeLineItem data)
+        {
+            int setPoint = data.SetPoint.Value;
+            // 고유 or 태초 이면 조율 안됨
+            int maxSetpoint = (data.ConvertSetItem == "고유" || data.ItemRarity == "태초") ? data.SetPoint.Value : data.SetPoint.Value + 30;
+            string itemRarity = data.ItemRarity;
+
+            // // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
+            switch (data.Slot)
+            {
+                case "머리어깨":
+                    HandAndShoulder = HandAndShoulder < setPoint ? setPoint : HandAndShoulder;
+                    MaxHandAndShoulder = MaxHandAndShoulder < maxSetpoint ? maxSetpoint : MaxHandAndShoulder;
+                    if (RarityLevelHandAndShoulder < data.ItemRarityLevel)
+                    {
+                        RarityHandAndShoulder = itemRarity;
+                        RarityLevelHandAndShoulder = data.ItemRarityLevel;
+                    }
+                    break;
+                case "상의":
+                    Coat = Coat < setPoint ? setPoint : Coat;
+                    MaxCoat = MaxCoat < maxSetpoint ? maxSetpoint : MaxCoat;
+                    if (RarityLevelCoat < data.ItemRarityLevel)
+                    {
+                        RarityCoat = itemRarity;
+                        RarityLevelCoat = data.ItemRarityLevel;
+                    }
+                    break;
+                case "하의":
+                    Pants = Pants < setPoint ? setPoint : Pants;
+                    MaxPants = MaxPants < maxSetpoint ? maxSetpoint : MaxPants;
+                    if (RarityLevelPants < data.ItemRarityLevel)
+                    {
+                        RarityPants = itemRarity;
+                        RarityLevelPants = data.ItemRarityLevel;
+                    }
+                    break;
+                case "벨트":
+                    Belt = Belt < setPoint ? setPoint : Belt;
+                    MaxBelt = MaxBelt < maxSetpoint ? maxSetpoint : MaxBelt;
+                    if (RarityLevelBelt < data.ItemRarityLevel)
+                    {
+                        RarityBelt = itemRarity;
+                        RarityLevelBelt = data.ItemRarityLevel;
+                    }
+                    break;
+                case "신발":
+                    Shoes = Shoes < setPoint ? setPoint : Shoes;
+                    MaxShoes = MaxShoes < maxSetpoint ? maxSetpoint : MaxShoes;
+                    if (RarityLevelShoes < data.ItemRarityLevel)
+                    {
+                        RarityShoes = itemRarity;
+                        RarityLevelShoes = data.ItemRarityLevel;
+                    }
+                    break;
+                case "팔찌":
+                    Brac = Brac < setPoint ? setPoint : Brac;
+                    MaxBrac = MaxBrac < maxSetpoint ? maxSetpoint : MaxBrac;
+                    if (RarityLevelBrac < data.ItemRarityLevel)
+                    {
+                        RarityBrac = itemRarity;
+                        RarityLevelBrac = data.ItemRarityLevel;
+                    }
+                    break;
+                case "목걸이":
+                    Neck = Neck < setPoint ? setPoint : Neck;
+                    MaxNeck = MaxNeck < maxSetpoint ? maxSetpoint : MaxNeck;
+                    if (RarityLevelNeck < data.ItemRarityLevel)
+                    {
+                        RarityNeck = itemRarity;
+                        RarityLevelNeck = data.ItemRarityLevel;
+                    }
+                    break;
+                case "보조장비":
+                    Sup = Sup < setPoint ? setPoint : Sup;
+                    MaxSup = MaxSup < maxSetpoint ? maxSetpoint : MaxSup;
+                    if (RarityLevelSup < data.ItemRarityLevel)
+                    {
+                        RaritySup = itemRarity;
+                        RarityLevelSup = data.ItemRarityLevel;
+                    }
+                    break;
+                case "반지":
+                    Ring = Ring < setPoint ? setPoint : Ring;
+                    MaxRing = MaxRing < maxSetpoint ? maxSetpoint : MaxRing;
+                    if (RarityLevelRing < data.ItemRarityLevel)
+                    {
+                        RarityRing = itemRarity;
+                        RarityLevelRing = data.ItemRarityLevel;
+                    }
+                    break;
+                case "귀걸이":
+                    Earing = Earing < setPoint ? setPoint : Earing;
+                    MaxEaring = MaxEaring < maxSetpoint ? maxSetpoint : MaxEaring;
+                    if (RarityLevelEaring < data.ItemRarityLevel)
+                    {
+                        RarityEaring = itemRarity;
+                        RarityLevelEaring = data.ItemRarityLevel;
+                    }
+                    break;
+                case "마법석":
+                    Ston = Ston < setPoint ? setPoint : Ston;
+                    MaxSton = MaxSton < maxSetpoint ? maxSetpoint : MaxSton;
+                    if (RarityLevelSton < data.ItemRarityLevel)
+                    {
+                        RaritySton = itemRarity;
+                        RarityLevelSton = data.ItemRarityLevel;
+                    }
+                    break;
+            }
+        }
+
         public override string ToString()
         {
             string retValue =

@@ -58,10 +58,13 @@
     <Compile Include="Models\DnfApiCharSummary.cs" />
     <Compile Include="Models\DnfApi\CharInfo.cs" />
     <Compile Include="Models\DnfApi\EquipmentInfo.cs" />
+    <Compile Include="Models\DnfApi\ItemInfo.cs" />
     <Compile Include="Models\DnfApi\TimeLineInfo.cs" />
     <Compile Include="Models\FusionItem.cs" />
     <Compile Include="Models\ICharSummary.cs" />
+    <Compile Include="Models\TimeLineItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DnfApiService.cs" />
     <Compile Include="Utils\DfDunDamHelper.cs" />
     <Compile Include="Utils\DfGearHelper.cs" />
     <Compile Include="Utils\CodeHelper.cs" />
@@ -69,6 +72,9 @@
     <Compile Include="Utils\HttpClientHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ItemDatas\SetItem.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

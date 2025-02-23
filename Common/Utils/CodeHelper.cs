@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -124,6 +125,106 @@ namespace Common.Utils
             "마력의 영역 세트",
             "용투장의 난 세트"
         };
+
+        public static List<string> SetItemWords = new List<string>()
+        {
+            "황금향",
+            "정화",
+            "행운",
+            "한계",
+            "페어리",
+            "자연",
+            "발키리",
+            "여우",
+            "그림자",
+            "무리의",
+            "마력의",
+            "용제", "용왕", "용투", "용의",
+            "태초의",
+            "영웅담",
+            "전설 속의",
+            "고유 -"
+        };
+
+        private static List<string> _allDungeonNames = new List<string>();
+
+        public static List<string> AllDungeonNames
+        {
+            get {
+                if(_allDungeonNames.Count == 0)
+                {
+                    _allDungeonNames.AddRange(WeeklyDungeonNames);
+                    _allDungeonNames.AddRange(DailyDungeonNames);
+                    _allDungeonNames.AddRange(BaseDungeonNames);
+                    _allDungeonNames.AddRange(HellDungeonNames);
+                }
+                return _allDungeonNames; 
+            }
+        }
+
+        /// <summary>
+        /// 중천 아이템 정보. 레거시 제외상태
+        /// </summary>
+        private static List<Common.Models.DnfApi.ItemInfo> _itemsLv115 = new List<Models.DnfApi.ItemInfo>();
+        public static List<Common.Models.DnfApi.ItemInfo> ItemsLv115
+        {
+            get
+            {
+                if (_itemsLv115 == null || _itemsLv115.Count == 0)
+                {
+                    try
+                    {
+                        string itemDoc = System.IO.File.ReadAllText(@".\ItemDatas\SetItem.json");
+                        var temp = JsonConvert.DeserializeObject<List<Common.Models.DnfApi.ItemInfo>>(itemDoc);
+                        if(temp != null) { _itemsLv115 = temp; }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("중천 아이템 정보 로드 실패");
+                        Console.WriteLine(e);
+                    }
+                }
+                return _itemsLv115;
+            }
+        }
+
+        public static List<string> WeeklyDungeonNames = new List<string>()
+        {
+            "죽음의 여신전",
+            "침묵의 성소",
+            "애쥬어 메인",
+            "달이 잠긴 호수",
+            "꿈결 속 솔리다리스",
+            "꿈결 속 흰 구름 계곡",
+            "미의 여신 베누스"
+        };
+
+        public static List<string> DailyDungeonNames = new List<string>()
+        {
+            "모독 : 적막의 회랑",
+            "모독 : 일렁이는 군도",
+            "광포 : 크루얼 비스트",
+            "광포 : 청해의 심장",
+            "환란 : 별내림 숲",
+            "환란 : 길잡이 강"
+        };
+
+        public static List<string> BaseDungeonNames = new List<string>()
+        {
+            "일렁이는 군도",
+            "적막의 회랑",
+            "크루얼 비스트",
+            "청해의 심장",
+            "별내림 숲",
+            "길잡이 강"
+        };
+
+        public static List<string> HellDungeonNames = new List<string>()
+        {
+            "종말의 숭배자",
+            "심연 : 종말의 숭배자"
+        };
+
     }
 
     public static class ExtensionMethod
