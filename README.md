@@ -22,7 +22,7 @@
 
 ![image](https://github.com/user-attachments/assets/6ae844da-0458-403d-9b20-63fdd4d84292)
 
-해당 정보는 던담, 던파기어, 네오플 정보를 가지고 표출
+해당 정보는 네오플 정보를 가지고 표출
 
 
 실행파일 v1.7 : [https://drive.google.com/file/d/1RfzfdDmilUMI6ZDIK1Clp5yvyy0zPdoy/view?usp=drive_link](https://drive.google.com/file/d/16VHEVg8ZAcHM-qugTIvJOD_Ek-Qo1pl0/view?usp=drive_link)
