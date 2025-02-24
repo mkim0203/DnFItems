@@ -107,9 +107,18 @@ namespace MySetItem
                 {
                     outputListSetItem.AppendLine($"<h4>{group.Key}</h4>");
                     //<div class="col-11">
-                    outputListSetItem.AppendLine($"<div class='col-10'>");
+                    outputListSetItem.AppendLine($"<div class='col-11'>");
                     outputListSetItem.AppendLine($"<table class='table table-bordered'>");
-                    outputListSetItem.AppendLine($"<tr><th>아이템</th><th>이름</th><th>등급</th><th>부위</th><th>채널</th><th>던전</th><th>획득 방법</th><th>획득 일</th></tr>");
+                    outputListSetItem.AppendLine($@"<tr>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:100px'>등급</th>
+    <th style='width:100px'>부위</th>
+    <th style='width:190px'>채널</th>
+    <th style='width:190px'>던전</th>
+    <th style='width:220px'>획득 방법</th>
+    <th style='width:150px'>획득 일</th>
+</tr>");
                     foreach (var item in group)
                     {
                         outputListSetItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
