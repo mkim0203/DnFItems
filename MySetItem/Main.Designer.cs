@@ -62,16 +62,6 @@
             this.cbServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbServer.Font = new System.Drawing.Font("맑은 고딕", 13.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.cbServer.FormattingEnabled = true;
-            this.cbServer.Items.AddRange(new object[] {
-            "모험단",
-            "카인",
-            "디레지에",
-            "시로코",
-            "프레이",
-            "카시야스",
-            "힐더",
-            "안톤",
-            "바칼"});
             this.cbServer.Location = new System.Drawing.Point(512, 38);
             this.cbServer.Name = "cbServer";
             this.cbServer.Size = new System.Drawing.Size(189, 55);
@@ -131,6 +121,7 @@
             this.MaximizeBox = false;
             this.Name = "Main";
             this.Text = "중천 캐릭터 기준 세트템 조회";
+            this.Load += new System.EventHandler(this.Main_Load);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,21 +27,42 @@ namespace MySetItem
         public string _dfDunDamUrl = "https://dundam.xyz";
         public string _dfApiUrl = "https://api.neople.co.kr";
 
-        //public List<string> SetItems = new List<string>()
-        //{
-        //    "영원히 이어지는 황금향 세트",
-        //    "칠흑의 정화 세트",
-        //    "세렌디피티 세트",
-        //    "한계를 넘어선 에너지 세트",
-        //    "소울 페어리 세트",
-        //    "압도적인 자연 세트",
-        //    "고대 전장의 발키리 세트",
-        //    "에테리얼 오브 아츠 세트",
-        //    "그림자에 숨은 죽음 세트",
-        //    "무리 사냥의 길잡이 세트",
-        //    "마력의 영역 세트",
-        //    "용투장의 난 세트"
-        //};
+        private List<string> _serverList { get; set; }
+        public List<string> ServerList
+        { 
+            get
+            {
+                if (_serverList == null || _serverList.Count == 0)
+                {
+                    _serverList = new List<string>()
+                    {
+                        "카인",
+                        "디레지에",
+                        "시로코",
+                        "프레이",
+                        "카시야스",
+                        "힐더",
+                        "안톤",
+                        "바칼"
+                    };
+
+                    try
+                    {
+                        string option = ConfigurationManager.AppSettings["ServersOption"];
+                        if (option == "1")
+                        {
+                            _serverList.Insert(0, "모험단");
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+                return _serverList;
+            }
+        }
 
         public Main()
         {
@@ -372,6 +394,11 @@ namespace MySetItem
                 FileName = fileName,
                 UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
             });
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            cbServer.Items.AddRange(ServerList.ToArray());
         }
     }
 }
