@@ -15,8 +15,18 @@ namespace Common.Models
 
         public DnfApiCharSummary(CharInfo charInfo, EquipmentResult equipment)
         {
-            this._baseInfo = charInfo;
-            this._equiInfos = equipment;
+            if(charInfo != null) this._baseInfo = charInfo;
+            if (equipment != null)
+            {
+                this._equiInfos = equipment;
+
+                foreach (var item in this._equiInfos.EquipmentInfos)
+                {
+                    int targetOrder = -1;
+                    bool findItem = CodeHelper.SlotOrder.TryGetValue(item.SlotName, out targetOrder);
+                    item.SlotOrder = targetOrder;
+                }
+            }
         }
 
         private KeyValuePair<string, int>? GetNextGrade(int setPoint)
@@ -151,7 +161,7 @@ namespace Common.Models
             StringBuilder sb = new StringBuilder();
             if (_equiInfos != null)
             {
-                foreach (var item in _equiInfos.EquipmentInfos)
+                foreach (var item in _equiInfos.EquipmentInfos.OrderBy(x => x.SlotOrder))
                 {
                     string htmlText = $@"<tr>
     <td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td>

@@ -226,6 +226,23 @@ namespace Common.Utils
             "심연 : 종말의 숭배자"
         };
 
+        public static Dictionary<string, int> SlotOrder = new Dictionary<string, int>()
+        {
+            { "무기", 0 },
+            { "칭호", 1 },
+            { "머리어깨", 2 },
+            { "상의", 3 },
+            { "하의", 4 },
+            { "벨트", 5 },
+            { "신발", 6 },
+            { "팔찌", 7 },
+            { "목걸이", 8 },
+            { "보조장비", 9 },
+            { "반지", 10 },
+            { "귀걸이", 11 },
+            { "마법석", 12 }
+        };
+
     }
 
     public static class ExtensionMethod

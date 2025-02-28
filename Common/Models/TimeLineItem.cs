@@ -28,6 +28,9 @@ namespace Common.Models
                 if(findItem != null)
                 {
                     Slot = findItem.ItemType == "무기" ? findItem.ItemType : findItem.ItemTypeDetail;
+                    int sortNum = -1;
+                    bool findSlot = CodeHelper.SlotOrder.TryGetValue(Slot, out sortNum);
+                    if(findSlot) SlotOrder = sortNum;
                     ItemType = findItem.ItemType;
                 } else
                 {
@@ -92,6 +95,7 @@ namespace Common.Models
         public bool? MistGear { get; set; }
 
         public string Slot { get; set; }
+        public int SlotOrder { get; set; }
         public string SetItemName { get; set; }
 
         public string ItemType { get; set; }

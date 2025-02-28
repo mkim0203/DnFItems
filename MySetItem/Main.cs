@@ -118,11 +118,20 @@ namespace MySetItem
                 // SetItemName 기준으로 그룹화
                 var groupedItems = result
                         .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
-                        .OrderBy(item => item.ItemName)
+                        .OrderBy(item => item.SlotOrder)
                         .ThenByDescending(item => item.ItemRarityLevel)
                         .ThenByDescending(item => item.Date)
                         .GroupBy(item => item.ConvertSetItem)
-                        ;
+                        //.Select(group => new
+                        //{
+                        //    Key = group.Key,
+                        //    Items = group
+                        //        .OrderBy(item => item.ItemName) // 그룹 내에서 다시 정렬
+                        //        .ThenByDescending(item => item.ItemRarityLevel)
+                        //        .ThenByDescending(item => item.Date)
+                        //        .ToList()
+                        //});
+                ;
 
                 StringBuilder outputListSetItem = new StringBuilder();
                 foreach (var group in groupedItems)

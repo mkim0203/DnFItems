@@ -43,6 +43,8 @@ namespace Common.Models.DnfApi
         public string SlotId { get; set; }
         [JsonProperty("slotName")]
         public string SlotName { get; set; }
+        public int SlotOrder { get; set; }
+
         [JsonProperty("itemId")]
         public string ItemId { get; set; }
         [JsonProperty("itemName")]
