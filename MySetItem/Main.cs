@@ -102,7 +102,7 @@ namespace MySetItem
                 MessageBox.Show(ex.Message + Environment.NewLine + "조회중 오류가 발생했습니다. 입력정보를 다시 확인후 재시도 해보세요.", "알람");
             }
             btnSearch.Enabled = true;
-            lblStat.Text = "완료";
+            
         }
 
 
@@ -115,36 +115,39 @@ namespace MySetItem
 
             List<TimeLineItem> result = await DnfApiService.GetAllTimeLineAsync(userId, serverName);
 
-
-            if (result != null && result.Count > 0)
+            if (result == null || result.Count == 0)
             {
-                Console.WriteLine("===============");
-                // SetItemName 기준으로 그룹화
-                var groupedItems = result
-                        .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
-                        .OrderBy(item => item.SlotOrder)
-                        .ThenByDescending(item => item.ItemRarityLevel)
-                        .ThenByDescending(item => item.Date)
-                        .GroupBy(item => item.ConvertSetItem)
-                        //.Select(group => new
-                        //{
-                        //    Key = group.Key,
-                        //    Items = group
-                        //        .OrderBy(item => item.ItemName) // 그룹 내에서 다시 정렬
-                        //        .ThenByDescending(item => item.ItemRarityLevel)
-                        //        .ThenByDescending(item => item.Date)
-                        //        .ToList()
-                        //});
-                ;
+                lblStat.Text = "캐릭터 정보가 조회되지 않았습니다.";
+                return;
+            }
 
-                StringBuilder outputListSetItem = new StringBuilder();
-                foreach (var group in groupedItems)
-                {
-                    outputListSetItem.AppendLine($"<h4>{group.Key}</h4>");
-                    //<div class="col-11">
-                    outputListSetItem.AppendLine($"<div class='col-11'>");
-                    outputListSetItem.AppendLine($"<table class='table table-bordered'>");
-                    outputListSetItem.AppendLine($@"<tr>
+            Console.WriteLine("===============");
+            // SetItemName 기준으로 그룹화
+            var groupedItems = result
+                    .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
+                    .OrderBy(item => item.SlotOrder)
+                    .ThenByDescending(item => item.ItemRarityLevel)
+                    .ThenByDescending(item => item.Date)
+                    .GroupBy(item => item.ConvertSetItem)
+            //.Select(group => new
+            //{
+            //    Key = group.Key,
+            //    Items = group
+            //        .OrderBy(item => item.ItemName) // 그룹 내에서 다시 정렬
+            //        .ThenByDescending(item => item.ItemRarityLevel)
+            //        .ThenByDescending(item => item.Date)
+            //        .ToList()
+            //});
+            ;
+
+            StringBuilder outputListSetItem = new StringBuilder();
+            foreach (var group in groupedItems)
+            {
+                outputListSetItem.AppendLine($"<h4>{group.Key}</h4>");
+                //<div class="col-11">
+                outputListSetItem.AppendLine($"<div class='col-11'>");
+                outputListSetItem.AppendLine($"<table class='table table-bordered'>");
+                outputListSetItem.AppendLine($@"<tr>
     <th style='width:40px'>item</th>
     <th>이름</th>
     <th style='width:100px'>등급</th>
@@ -154,200 +157,198 @@ namespace MySetItem
     <th style='width:220px'>획득 방법</th>
     <th style='width:150px'>획득 일</th>
 </tr>");
-                    foreach (var item in group)
-                    {
-                        outputListSetItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
-                    }
-                    outputListSetItem.AppendLine($"</table></div><br/>");
+                foreach (var item in group)
+                {
+                    outputListSetItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
                 }
+                outputListSetItem.AppendLine($"</table></div><br/>");
+            }
 
-                // 레어리티 별 갯수
-                var rarityGroup = result
-                        .GroupBy(item => item.ItemRarity )
-                        .Select(group => new
-                        {
-                            Rarity = group.Key,
-                            Count = group.Count()
-                        })
-                        .ToList();
-
-                string rarityX = JsonConvert.SerializeObject(rarityGroup.Select(x => x.Rarity));
-                string rarityY = JsonConvert.SerializeObject(rarityGroup.Select(x => x.Count));
-
-                // 채널별 갯수
-                var channelGroup = result
-                        .GroupBy(item => item.GetChannelInfo)
-                        .Select(group => new
-                        {
-                            Channel = group.Key,
-                            Count = group.Count()
-                        }).Take(10)
-                        .ToList();
-
-                string channelX = JsonConvert.SerializeObject(channelGroup.Select(x => x.Channel));
-                string channelY = JsonConvert.SerializeObject(channelGroup.Select(x => x.Count));
-
-                var hellGroup = result
-                        .Where(x => x.IsBaseHell)
-                        .GroupBy(item => item.ItemRarity)
-                        .Select(group => new
-                        {
-                            Rarity = group.Key,
-                            Count = group.Count()
-                        }).Take(10)
-                        .ToList();
-
-                string hellX = JsonConvert.SerializeObject(hellGroup.Select(x => x.Rarity));
-                string hellY = JsonConvert.SerializeObject(hellGroup.Select(x => x.Count));
-
-                var spHellGroup = result
-                       .Where(x => x.IsSpHell)
-                       .GroupBy(item => item.ItemRarity)
-                       .Select(group => new
-                       {
-                           Rarity = group.Key,
-                           Count = group.Count()
-                       }).Take(10)
-                       .ToList();
-
-                string spHellX = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Rarity));
-                string spHellY = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Count));
-
-                var weeklyGroup = result
-                       .Where(x => x.IsWeekly)
-                       .GroupBy(item => item.DungeonName)
-                       .Select(group => new
-                       {
-                           DungeonName = group.Key,
-                           Count = group.Count()
-                       }).Take(10)
-                       .ToList();
-
-                string weeklyX = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.DungeonName));
-                string weeklyY = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.Count));
-
-                // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
-                // ConvertSetItem & Slot 기준으로 그룹화 후 SetPoint가 가장 높은 항목 선택
-                var bestItems = result
-                    .Where(item => string.IsNullOrEmpty(item.ConvertSetItem) == false)
-                    .GroupBy(item => new { item.ConvertSetItem, item.Slot })
-                    .Select(group => group.OrderByDescending(item => item.SetPoint).First())
-                    .OrderBy(x => x.ConvertSetItem)
+            // 레어리티 별 갯수
+            var rarityGroup = result
+                    .GroupBy(item => item.ItemRarity)
+                    .Select(group => new
+                    {
+                        Rarity = group.Key,
+                        Count = group.Count()
+                    })
                     .ToList();
 
+            string rarityX = JsonConvert.SerializeObject(rarityGroup.Select(x => x.Rarity));
+            string rarityY = JsonConvert.SerializeObject(rarityGroup.Select(x => x.Count));
 
-                // 고유 아이템
-                //List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
-
-                //List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
-                //foreach (string setName in CodeHelper.SetItems)
-                //{
-                //    AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
-                //    foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
-                //    {
-                //        addItem.SettingPoint(item);
-                //    }
-                //    foreach (Common.Models.DfGear.ItemDetail item in commonItems)
-                //    {
-                //        addItem.SettingPoint(item);
-                //    }
-
-                //    allAvailableSetItem.Add(addItem);
-                //}
-
-                List<Common.Models.TimeLineItem> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
-
-                List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
-                foreach (string setName in CodeHelper.SetItems)
-                {
-                    AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
-                    foreach (Common.Models.TimeLineItem item in bestItems.Where(x => x.SetItemName == setName))
+            // 채널별 갯수
+            var channelGroup = result
+                    .GroupBy(item => item.GetChannelInfo)
+                    .Select(group => new
                     {
-                        addItem.SettingPoint(item);
-                    }
-                    foreach (Common.Models.TimeLineItem item in commonItems)
+                        Channel = group.Key,
+                        Count = group.Count()
+                    }).Take(10)
+                    .ToList();
+
+            string channelX = JsonConvert.SerializeObject(channelGroup.Select(x => x.Channel));
+            string channelY = JsonConvert.SerializeObject(channelGroup.Select(x => x.Count));
+
+            var hellGroup = result
+                    .Where(x => x.IsBaseHell)
+                    .GroupBy(item => item.ItemRarity)
+                    .Select(group => new
                     {
-                        addItem.SettingPoint(item);
-                    }
+                        Rarity = group.Key,
+                        Count = group.Count()
+                    }).Take(10)
+                    .ToList();
 
-                    allAvailableSetItem.Add(addItem);
-                }
+            string hellX = JsonConvert.SerializeObject(hellGroup.Select(x => x.Rarity));
+            string hellY = JsonConvert.SerializeObject(hellGroup.Select(x => x.Count));
 
-                // 세트포인트 가장 높은거 체크
-                int maxSetPoint = allAvailableSetItem.Max(x => x.AllPoint);
-                var topItems = allAvailableSetItem.Where(x => x.AllPoint == maxSetPoint);
-                foreach (var item in topItems) { item.IsTop = true; }
+            var spHellGroup = result
+                   .Where(x => x.IsSpHell)
+                   .GroupBy(item => item.ItemRarity)
+                   .Select(group => new
+                   {
+                       Rarity = group.Key,
+                       Count = group.Count()
+                   }).Take(10)
+                   .ToList();
 
+            string spHellX = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Rarity));
+            string spHellY = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Count));
 
+            var weeklyGroup = result
+                   .Where(x => x.IsWeekly)
+                   .GroupBy(item => item.DungeonName)
+                   .Select(group => new
+                   {
+                       DungeonName = group.Key,
+                       Count = group.Count()
+                   }).Take(10)
+                   .ToList();
 
-                // 던담 정보 조회. 제거
-                //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-                //Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
-                //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-                //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+            string weeklyX = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.DungeonName));
+            string weeklyY = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.Count));
 
-                // 던파 api 조회
-                Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
-                Common.Models.DnfApi.CharInfo charInfo = await dnfApi.GetCharInfoAsync(userId, serverName);
-                Common.Models.DnfApi.EquipmentResult equipment = await dnfApi.GetEquipmentsAsync(charInfo.CharacterId, serverName);
-                Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfo, equipment);
-
-                // 융합석 정보 가져오기
-                var charFusionItem = charSummary.GetFusionItem();
-
-                // 착용 가능 세트정보에 융합석 정보 넣기
-                // 융합석은 변환가능하기 때문에 착용중인 융합석 기준으로 넘김
-                foreach(var item in allAvailableSetItem)
-                {
-                    item.SetFusionItem(charFusionItem);
-                }
-
-
-                StringBuilder outputAvailableSetItem = new StringBuilder();
-
-                foreach (var setItem in allAvailableSetItem)
-                {
-                    outputAvailableSetItem.AppendLine(setItem.OutputHtml());
-                }
+            // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
+            // ConvertSetItem & Slot 기준으로 그룹화 후 SetPoint가 가장 높은 항목 선택
+            var bestItems = result
+                .Where(item => string.IsNullOrEmpty(item.ConvertSetItem) == false)
+                .GroupBy(item => new { item.ConvertSetItem, item.Slot })
+                .Select(group => group.OrderByDescending(item => item.SetPoint).First())
+                .OrderBy(x => x.ConvertSetItem)
+                .ToList();
 
 
-                string htmlDoc = File.ReadAllText("layout.txt");
-                string outputHtml = htmlDoc.Replace("{{CharInfo}}", $"{userId} / {serverName}")
-                        .Replace("{{ListSetItem}}", outputListSetItem.ToString())
-                        .Replace("{{AvailableSetItem}}", outputAvailableSetItem.ToString())
-                        .Replace("{{CharKey}}", charSummary.GetCharacterKey())
-                        .Replace("{{ServerId}}", charSummary.GetServerId())
-                        .Replace("{{CharSummary}}", charSummary.GetCharSummaryHtml())
-                        .Replace("{{UseItemSummary}}", charSummary.GetUseItemSummaryHtml())
-                        .Replace("{{UseItemTitleSummary}}", charSummary.GetUseItemTitleSummaryHtml())
-                        .Replace("{{RarityX}}", rarityX)
-                        .Replace("{{RarityY}}", rarityY)
-                        .Replace("{{ChannelX}}", channelX)
-                        .Replace("{{ChannelY}}", channelY)
-                        .Replace("{{HellX}}", hellX)
-                        .Replace("{{HellY}}", hellY)
-                        .Replace("{{SpHellX}}", spHellX)
-                        .Replace("{{SpHellY}}", spHellY)
-                        .Replace("{{WeeklyX}}", weeklyX)
-                        .Replace("{{WeeklyY}}", weeklyY)
-                        .Replace("{{CharName}}", userId)
-                        ;
+            // 고유 아이템
+            //List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
 
-                string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+            //List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
+            //foreach (string setName in CodeHelper.SetItems)
+            //{
+            //    AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
+            //    foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
+            //    {
+            //        addItem.SettingPoint(item);
+            //    }
+            //    foreach (Common.Models.DfGear.ItemDetail item in commonItems)
+            //    {
+            //        addItem.SettingPoint(item);
+            //    }
 
-                File.WriteAllText(fileName, outputHtml);
+            //    allAvailableSetItem.Add(addItem);
+            //}
 
-                // 기본 브라우저에서 HTML 파일 열기
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = fileName,
-                    UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
-                });
-            }
-            else
+            List<Common.Models.TimeLineItem> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
+
+            List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
+            foreach (string setName in CodeHelper.SetItems)
             {
-                //throw new Exception("입력한 캐릭터가 던담, 던파기어에서 조회된 내역이 없거나 잘못된경우 입니다. 확인후 다시 해보세요.");
+                AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
+                foreach (Common.Models.TimeLineItem item in bestItems.Where(x => x.SetItemName == setName))
+                {
+                    addItem.SettingPoint(item);
+                }
+                foreach (Common.Models.TimeLineItem item in commonItems)
+                {
+                    addItem.SettingPoint(item);
+                }
+
+                allAvailableSetItem.Add(addItem);
             }
+
+            // 세트포인트 가장 높은거 체크
+            int maxSetPoint = allAvailableSetItem.Max(x => x.AllPoint);
+            var topItems = allAvailableSetItem.Where(x => x.AllPoint == maxSetPoint);
+            foreach (var item in topItems) { item.IsTop = true; }
+
+
+
+            // 던담 정보 조회. 제거
+            //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
+            //Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
+            //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+            //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+
+            // 던파 api 조회
+            Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
+            Common.Models.DnfApi.CharInfo charInfo = await dnfApi.GetCharInfoAsync(userId, serverName);
+            Common.Models.DnfApi.EquipmentResult equipment = await dnfApi.GetEquipmentsAsync(charInfo.CharacterId, serverName);
+            Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfo, equipment);
+
+            // 융합석 정보 가져오기
+            var charFusionItem = charSummary.GetFusionItem();
+
+            // 착용 가능 세트정보에 융합석 정보 넣기
+            // 융합석은 변환가능하기 때문에 착용중인 융합석 기준으로 넘김
+            foreach (var item in allAvailableSetItem)
+            {
+                item.SetFusionItem(charFusionItem);
+            }
+
+
+            StringBuilder outputAvailableSetItem = new StringBuilder();
+
+            foreach (var setItem in allAvailableSetItem)
+            {
+                outputAvailableSetItem.AppendLine(setItem.OutputHtml());
+            }
+
+
+            string htmlDoc = File.ReadAllText("layout.txt");
+            string outputHtml = htmlDoc.Replace("{{CharInfo}}", $"{userId} / {serverName}")
+                    .Replace("{{ListSetItem}}", outputListSetItem.ToString())
+                    .Replace("{{AvailableSetItem}}", outputAvailableSetItem.ToString())
+                    .Replace("{{CharKey}}", charSummary.GetCharacterKey())
+                    .Replace("{{ServerId}}", charSummary.GetServerId())
+                    .Replace("{{CharSummary}}", charSummary.GetCharSummaryHtml())
+                    .Replace("{{UseItemSummary}}", charSummary.GetUseItemSummaryHtml())
+                    .Replace("{{UseItemTitleSummary}}", charSummary.GetUseItemTitleSummaryHtml())
+                    .Replace("{{RarityX}}", rarityX)
+                    .Replace("{{RarityY}}", rarityY)
+                    .Replace("{{ChannelX}}", channelX)
+                    .Replace("{{ChannelY}}", channelY)
+                    .Replace("{{HellX}}", hellX)
+                    .Replace("{{HellY}}", hellY)
+                    .Replace("{{SpHellX}}", spHellX)
+                    .Replace("{{SpHellY}}", spHellY)
+                    .Replace("{{WeeklyX}}", weeklyX)
+                    .Replace("{{WeeklyY}}", weeklyY)
+                    .Replace("{{CharName}}", userId)
+                    ;
+
+            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+
+            File.WriteAllText(fileName, outputHtml);
+
+            // 기본 브라우저에서 HTML 파일 열기
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
+            });
+
+            lblStat.Text = "완료.";
+
         }
 
         public async Task RunAdvenAsync(string advenName)
@@ -359,6 +360,12 @@ namespace MySetItem
             Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
             var charInfos = await dfmax.GetAdvenUsersAsync(advenName);
 
+            if(charInfos == null || charInfos.Count == 0)
+            {
+                lblStat.Text = "모험단 정보가 조회되지 않았습니다.";
+                return;
+            }
+            
             StringBuilder outputInfos = new StringBuilder();
 
             int index = 0;
@@ -409,6 +416,8 @@ namespace MySetItem
                 FileName = fileName,
                 UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
             });
+
+            lblStat.Text = "완료.";
         }
 
         public async Task RunGuildAsync(string guildName)
@@ -420,7 +429,7 @@ namespace MySetItem
 
             if(guildUsers == null || guildUsers.Count == 0)
             {
-                lblStat.Text = "길드원 정보가 조회되지 않았습니다.";
+                lblStat.Text = "길드 정보가 조회되지 않았습니다.";
                 return;
             }
 
@@ -478,6 +487,8 @@ namespace MySetItem
                 FileName = fileName,
                 UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
             });
+
+            lblStat.Text = "완료.";
         }
 
         private void Main_Load(object sender, EventArgs e)
