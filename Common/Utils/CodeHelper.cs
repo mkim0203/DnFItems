@@ -62,10 +62,10 @@ namespace Common.Utils
             string retValue = "";
             switch(setPoint)
             {
-                case 20:
+                case 25:
                     retValue = "uni";
                     break;
-                case 60:
+                case 65:
                     retValue = "epi";
                     break;
                 default:

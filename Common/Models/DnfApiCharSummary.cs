@@ -125,7 +125,7 @@ namespace Common.Models
             {
                 int setPoint = target.Active.SetPoint.Current;
                 var nextGrade = GetNextGrade(setPoint);
-
+                if (nextGrade == null) return 0;
                 if (nextGrade.Value.Value == 0) return 0;
                 return nextGrade.Value.Value - setPoint;
             }

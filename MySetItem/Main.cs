@@ -4,13 +4,11 @@ using Common.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
@@ -25,6 +23,7 @@ namespace MySetItem
     {
         public string _dfGearUrl = "https://api.dfgear.xyz";
         public string _dfDunDamUrl = "https://dundam.xyz";
+        public string _dfMaxUrl = "https://dfmax.xyz";
         public string _dfApiUrl = "https://api.neople.co.kr";
 
         private List<string> _serverList { get; set; }
@@ -51,6 +50,7 @@ namespace MySetItem
                         string option = ConfigurationManager.AppSettings["ServersOption"];
                         if (option == "1")
                         {
+                            _serverList.Insert(0, "길드");
                             _serverList.Insert(0, "모험단");
                         }
                     }
@@ -87,7 +87,11 @@ namespace MySetItem
             {
                 if (serverName.Equals("모험단"))
                 {
-                    await RunAdvenAsync(name, serverName);
+                    await RunAdvenAsync(name);
+                }
+                else if(serverName.Equals("길드"))
+                {
+                    await RunGuildAsync(name);
                 }
                 else
                 {
@@ -346,12 +350,14 @@ namespace MySetItem
             }
         }
 
-        public async Task RunAdvenAsync(string userId, string advenName)
+        public async Task RunAdvenAsync(string advenName)
         {
             DateTime stdt = DateTime.Now;
-            // 던담 정보 조회
-            Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-            var charInfos = await dundam.GetAdvenAsync(userId, advenName);
+            //// 던담 정보 조회
+            //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
+            //var charInfos = await dundam.GetAdvenAsync(userId, advenName);
+            Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
+            var charInfos = await dfmax.GetAdvenUsersAsync(advenName);
 
             StringBuilder outputInfos = new StringBuilder();
 
@@ -393,7 +399,76 @@ namespace MySetItem
                    
                     ;
 
-            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(advenName, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+
+            File.WriteAllText(fileName, outputHtml);
+
+            // 기본 브라우저에서 HTML 파일 열기
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
+            });
+        }
+
+        public async Task RunGuildAsync(string guildName)
+        {
+            DateTime stdt = DateTime.Now;
+            // 던담 정보 조회
+            Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
+            List<Common.Models.DfMax.CharacterInfo> guildUsers = await dfmax.GetGuildUsersAsync(guildName);
+
+            if(guildUsers == null || guildUsers.Count == 0)
+            {
+                lblStat.Text = "길드원 정보가 조회되지 않았습니다.";
+                return;
+            }
+
+            StringBuilder outputInfos = new StringBuilder();
+
+            int index = 0;
+
+            var searchTarget = guildUsers.Take(30);
+
+            foreach (var charInfo in searchTarget)
+            {
+                lblStat.Text = $"{++index} / {searchTarget.Count()} 조회중";
+                //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
+                //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
+
+                // 던파 api 조회
+                Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
+                Common.Models.DnfApi.CharInfo charInfoApi = await dnfApi.GetCharInfoAsync(charInfo.Name, charInfo.ServerId, true);
+                if (charInfoApi == null) continue;
+                Common.Models.DnfApi.EquipmentResult equipment = await dnfApi.GetEquipmentsAsync(charInfoApi.CharacterId, charInfo.ServerId, true);
+                Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfoApi, equipment);
+
+                Console.WriteLine($"{charInfo.Name} {(DateTime.Now - stdt).TotalSeconds}");
+
+                /*
+                 * <th>캐릭터명</th>
+				<th>세트 이름</th>
+				<th>세트 포인트</th>
+				<th>세트 등급</th>
+				<th>다음 필요 포인트</th>
+                 */
+                outputInfos.AppendLine($"<tr>");
+                //<div class="col-11">
+                outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
+                outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
+                outputInfos.AppendLine($"<td>{charSummary.GetNextSetPoint()}</td>");
+
+                outputInfos.AppendLine($"</tr>");
+            }
+
+            string htmlDoc = File.ReadAllText("layoutAdven.txt");
+            string outputHtml = htmlDoc.Replace("{{CharsSummary}}", outputInfos.ToString())
+
+                    ;
+
+            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(guildName, "[^가-힣a-zA-Z0-9 ]", "")}.html";
 
             File.WriteAllText(fileName, outputHtml);
 
