@@ -50,7 +50,7 @@ namespace MySetItem
                         string option = ConfigurationManager.AppSettings["ServersOption"];
                         if (option == "1")
                         {
-                            _serverList.Insert(0, "길드");
+                            _serverList.Add("길드");
                             _serverList.Insert(0, "모험단");
                         }
                     }
@@ -385,7 +385,7 @@ namespace MySetItem
                  */
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
-                outputInfos.AppendLine($"<td><a href='https://dundam.xyz/character?server={charInfo.ServerId}&key={charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
+                outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");

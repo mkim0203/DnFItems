@@ -81,10 +81,10 @@
 
         <div class="row mt-4">
             <div class="col-md-4">
-                <a href="https://dundam.xyz/character?server={{ServerId}}&key={{CharKey}}" class="btn btn-primary w-100" target="_blank">DUNDAM 링크</a>
+                <a href="https://dfmax.xyz/character/{{ServerId}}/{{CharKey}}" class="btn btn-warning w-100" target="_blank">DFMAX 링크</a>
             </div>
             <div class="col-md-4">
-                <a href="https://dfmax.xyz/character/{{ServerId}}/{{CharKey}}" class="btn btn-warning w-100" target="_blank">DFMAX 링크</a>
+                <a href="https://dundam.xyz/character?server={{ServerId}}&key={{CharKey}}" class="btn btn-primary w-100" target="_blank">DUNDAM 링크</a>
             </div>
         </div>
 
