@@ -464,6 +464,7 @@ namespace MySetItem
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
                 outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
+                outputInfos.AppendLine($"<td>{charInfo.Fame}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
@@ -472,7 +473,7 @@ namespace MySetItem
                 outputInfos.AppendLine($"</tr>");
             }
 
-            string htmlDoc = File.ReadAllText("layoutAdven.txt");
+            string htmlDoc = File.ReadAllText("layoutGuild.txt");
             string outputHtml = htmlDoc.Replace("{{CharsSummary}}", outputInfos.ToString())
 
                     ;

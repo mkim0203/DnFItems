@@ -36,7 +36,8 @@
 <body>
 	<div class="container mt-4">
 		<br/>
-		<h5>모험단 정보는 DFMAX 정보입니다. 조회되지 않는 경우 DFMAX에서 조회후 사용하세요.</h5>
+		<h5>길드 정보는 DFMAX 정보입니다. 조회되지 않는 경우 DFMAX에서 조회후 사용하세요.</h5>
+		<div>명성기준 top 30만 제공합니다.</div>
 
 		<br/>
 
@@ -44,6 +45,7 @@
 			<thead>
 				<tr>
 					<th>캐릭터명</th>
+					<th>명성</th>
 					<th>세트 이름</th>
 					<th>세트 포인트</th>
 					<th>세트 등급</th>
