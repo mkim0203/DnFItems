@@ -21,8 +21,6 @@ namespace MySetItem
 {
     public partial class Main : Form
     {
-        public string _dfGearUrl = "https://api.dfgear.xyz";
-        public string _dfDunDamUrl = "https://dundam.xyz";
         public string _dfMaxUrl = "https://dfmax.xyz";
         public string _dfApiUrl = "https://api.neople.co.kr";
 
@@ -109,10 +107,6 @@ namespace MySetItem
 
         public async Task RunAsync(string userId, string serverName)
         {
-            // 던파기어 제거
-            Common.Utils.DfGearHelper gear = new Common.Utils.DfGearHelper(_dfGearUrl);
-            //List<Common.Models.DfGear.ItemDetail> result = await gear.GetTimeLineItems(userId, serverName);
-
             List<TimeLineItem> result = await DnfApiService.GetAllTimeLineAsync(userId, serverName);
 
             if (result == null || result.Count == 0)
@@ -128,17 +122,7 @@ namespace MySetItem
                     .OrderBy(item => item.SlotOrder)
                     .ThenByDescending(item => item.ItemRarityLevel)
                     .ThenByDescending(item => item.Date)
-                    .GroupBy(item => item.ConvertSetItem)
-            //.Select(group => new
-            //{
-            //    Key = group.Key,
-            //    Items = group
-            //        .OrderBy(item => item.ItemName) // 그룹 내에서 다시 정렬
-            //        .ThenByDescending(item => item.ItemRarityLevel)
-            //        .ThenByDescending(item => item.Date)
-            //        .ToList()
-            //});
-            ;
+                    .GroupBy(item => item.ConvertSetItem);
 
             StringBuilder outputListSetItem = new StringBuilder();
             foreach (var group in groupedItems)
@@ -239,25 +223,6 @@ namespace MySetItem
                 .ToList();
 
 
-            // 고유 아이템
-            //List<Common.Models.DfGear.ItemDetail> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
-
-            //List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
-            //foreach (string setName in CodeHelper.SetItems)
-            //{
-            //    AvailableSetItem addItem = new AvailableSetItem() { SetItemName = setName };
-            //    foreach (Common.Models.DfGear.ItemDetail item in bestItems.Where(x => x.SetItemName == setName))
-            //    {
-            //        addItem.SettingPoint(item);
-            //    }
-            //    foreach (Common.Models.DfGear.ItemDetail item in commonItems)
-            //    {
-            //        addItem.SettingPoint(item);
-            //    }
-
-            //    allAvailableSetItem.Add(addItem);
-            //}
-
             List<Common.Models.TimeLineItem> commonItems = bestItems.Where(x => x.ConvertSetItem == "고유").ToList();
 
             List<AvailableSetItem> allAvailableSetItem = new List<AvailableSetItem>();
@@ -281,14 +246,6 @@ namespace MySetItem
             var topItems = allAvailableSetItem.Where(x => x.AllPoint == maxSetPoint);
             foreach (var item in topItems) { item.IsTop = true; }
 
-
-
-            // 던담 정보 조회. 제거
-            //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-            //Common.Models.DfDunDam.CharInfo charInfo = await dundam.GetCharInfoAsync(userId, serverName);
-            //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-            //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
-
             // 던파 api 조회
             Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
             Common.Models.DnfApi.CharInfo charInfo = await dnfApi.GetCharInfoAsync(userId, serverName);
@@ -308,7 +265,7 @@ namespace MySetItem
 
             StringBuilder outputAvailableSetItem = new StringBuilder();
 
-            foreach (var setItem in allAvailableSetItem)
+            foreach (var setItem in allAvailableSetItem.OrderByDescending(x => x.AllPoint))
             {
                 outputAvailableSetItem.AppendLine(setItem.OutputHtml());
             }
@@ -354,9 +311,7 @@ namespace MySetItem
         public async Task RunAdvenAsync(string advenName)
         {
             DateTime stdt = DateTime.Now;
-            //// 던담 정보 조회
-            //Common.Utils.DfDunDamHelper dundam = new Common.Utils.DfDunDamHelper(_dfDunDamUrl);
-            //var charInfos = await dundam.GetAdvenAsync(userId, advenName);
+            
             Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
             var charInfos = await dfmax.GetAdvenUsersAsync(advenName);
 
@@ -369,7 +324,7 @@ namespace MySetItem
             StringBuilder outputInfos = new StringBuilder();
 
             int index = 0;
-            foreach (var charInfo in charInfos)
+            foreach (var charInfo in charInfos.OrderByDescending(x => x.Fame))
             {
                 lblStat.Text = $"{++index} / {charInfos.Count} 조회중";
                 //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
@@ -393,6 +348,7 @@ namespace MySetItem
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
                 outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
+                outputInfos.AppendLine($"<td>{charInfo.Fame}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
