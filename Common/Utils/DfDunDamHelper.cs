@@ -11,6 +11,7 @@ using System.Web;
 
 namespace Common.Utils
 {
+    [Obsolete("사용안함")]
     public class DfDunDamHelper : HttpClientHelper
     {
         public DfDunDamHelper(string baseUrl) : base(baseUrl)

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Common.Utils
 {
+    [Obsolete("사용안함")]
     public class DfGearHelper : HttpClientHelper
     {
         public DfGearHelper(string baseUrl) : base(baseUrl)
