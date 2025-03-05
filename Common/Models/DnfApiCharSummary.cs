@@ -109,10 +109,15 @@ namespace Common.Models
         {
             if (_equiInfos?.SetItemInfos?.Count > 0)
             {
+                // 세트가 하나만 있는 경우
                 if (_equiInfos.SetItemInfos.Count == 1) return _equiInfos.SetItemInfos.FirstOrDefault();
 
-                int maxSetPoint = _equiInfos.SetItemInfos.Max(x => x.Active.SetPoint.Current);
-                return _equiInfos.SetItemInfos.FirstOrDefault(x => x.Active.SetPoint.Current == maxSetPoint);
+                // 세트가 여러개 있는 경우. SetPoint가 있는 세트중 최대 SetPoint를 가진 세트를 가져옴.
+                if (_equiInfos.SetItemInfos.Any(x => x.Active.SetPoint != null))
+                {
+                    int maxSetPoint = _equiInfos.SetItemInfos.Where(x => x.Active.SetPoint != null).Max(x => x.Active.SetPoint.Current);
+                    return _equiInfos.SetItemInfos.FirstOrDefault(x => x.Active.SetPoint.Current == maxSetPoint);
+                }
             }
 
             return null;
