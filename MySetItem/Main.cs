@@ -121,6 +121,7 @@ namespace MySetItem
                     .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
                     .OrderBy(item => item.SlotOrder)
                     .ThenByDescending(item => item.ItemRarityLevel)
+                    .ThenBy(item => item.ItemName)
                     .ThenByDescending(item => item.Date)
                     .GroupBy(item => item.ConvertSetItem);
 
@@ -327,9 +328,7 @@ namespace MySetItem
             foreach (var charInfo in charInfos.OrderByDescending(x => x.Fame))
             {
                 lblStat.Text = $"{++index} / {charInfos.Count} 조회중";
-                //Common.Models.DfDunDam.CharDetailInfo charDetailInfo = await dundam.GetCharDetailInfoAsync(charInfo.CharacterKey, charInfo.ServerId);
-                //Common.Models.CharSummary charSummary = new CharSummary(charInfo, charDetailInfo);
-
+                
                 // 던파 api 조회
                 Common.Utils.DnfApiHelper dnfApi = new Common.Utils.DnfApiHelper(_dfApiUrl);
                 Common.Models.DnfApi.CharInfo charInfoApi = await dnfApi.GetCharInfoAsync(charInfo.Name, charInfo.ServerId, true);
@@ -337,6 +336,10 @@ namespace MySetItem
                 Common.Models.DnfApiCharSummary charSummary = new Common.Models.DnfApiCharSummary(charInfoApi, equipment);
 
                 Console.WriteLine($"{charInfo.Name} {(DateTime.Now - stdt).TotalSeconds}");
+
+                // 융합석 정보 가져오기
+                var charFusionItem = charSummary.GetFusionItem();
+
 
                 /*
                  * <th>캐릭터명</th>
@@ -352,6 +355,8 @@ namespace MySetItem
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
+                outputInfos.AppendLine(charSummary.GetUseItemSummaryHtmlByAdven());
+                outputInfos.AppendLine(charSummary.GetFusionItemHtmlByAdven());
                 outputInfos.AppendLine($"<td>{charSummary.GetNextSetPoint()}</td>");
 
                 outputInfos.AppendLine($"</tr>");

@@ -13,6 +13,7 @@ namespace Common.Models
         private CharInfo _baseInfo { get; set; }
         private EquipmentResult _equiInfos { get; set; }
 
+
         public DnfApiCharSummary(CharInfo charInfo, EquipmentResult equipment)
         {
             if(charInfo != null) this._baseInfo = charInfo;
@@ -181,6 +182,44 @@ namespace Common.Models
                 }
             }
             return sb.ToString();
+        }
+
+        public string GetUseItemSummaryHtmlByAdven()
+        {
+            List<int> retValue = new List<int>();
+            StringBuilder sb = new StringBuilder();
+            if (_equiInfos != null)
+            {
+                
+                foreach (var item in _equiInfos.EquipmentInfos.Where(x => x.SlotOrder >= 2).OrderBy(x => x.SlotOrder))
+                {
+                    string htmlText = $@"
+    <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.TuneInfo.SetPoint}{(item.TuneInfo?.Level > 0 ? $"({item.TuneInfo?.Level})" : "")}</td>
+";
+
+                    sb.AppendLine(htmlText);
+                }
+            }
+            return sb.ToString();
+        }
+
+        public string GetFusionItemHtmlByAdven()
+        {
+            var fusionItem = GetFusionItem();
+            if (fusionItem != null)
+            {
+                string retValue = $@"<td class='{CodeHelper.GetFusionRarityColor(fusionItem.HandAndShoulder)}'>{fusionItem.HandAndShoulder}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Coat)}'>{fusionItem.Coat}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Pants)}'>{fusionItem.Pants}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Belt)}'>{fusionItem.Belt}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Shoes)}'>{fusionItem.Shoes}</td>";
+
+                return retValue;
+            }
+            else
+            {
+                return "<td></td><td></td><td></td><td></td><td></td>";
+            }
         }
 
         public string GetUseItemTitleSummaryHtml()

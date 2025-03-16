@@ -25,9 +25,14 @@
 	#SetItemsInfo th, #SetItemsInfo td, #SetItemsInfo tr {
 		font-size: 13px;
 	}
+
     #SetItemsInfo tbody tr:nth-child(odd) {
         border-top: 1.5px solid blue;
     }
+
+    #SetItemsInfo tbody td:nth-last-child(8) {
+		border-left: 1.5px solid black;
+	}
 
 	</style>
 </head>
