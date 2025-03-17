@@ -194,7 +194,7 @@ namespace Common.Models
                 foreach (var item in _equiInfos.EquipmentInfos.Where(x => x.SlotOrder >= 2).OrderBy(x => x.SlotOrder))
                 {
                     string htmlText = $@"
-    <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.TuneInfo.SetPoint}{(item.TuneInfo?.Level > 0 ? $"({item.TuneInfo?.Level})" : "")}</td>
+    <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item?.TuneInfo?.SetPoint}{(item?.TuneInfo?.Level > 0 ? $"({item?.TuneInfo?.Level})" : "")}</td>
 ";
 
                     sb.AppendLine(htmlText);
