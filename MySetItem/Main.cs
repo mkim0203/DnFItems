@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace MySetItem
 {
@@ -292,6 +293,7 @@ namespace MySetItem
                     .Replace("{{WeeklyX}}", weeklyX)
                     .Replace("{{WeeklyY}}", weeklyY)
                     .Replace("{{CharName}}", userId)
+                    .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                     ;
 
             string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
@@ -351,7 +353,7 @@ namespace MySetItem
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
                 outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
-                outputInfos.AppendLine($"<td>{charInfo.Fame}</td>");
+                outputInfos.AppendLine($"<td>{charInfo.Fame.GetValueOrDefault().ToString("#,##0")}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
@@ -363,9 +365,10 @@ namespace MySetItem
             }
 
             string htmlDoc = File.ReadAllText("layoutAdven.txt");
-            string outputHtml = htmlDoc.Replace("{{CharsSummary}}", outputInfos.ToString())
-                   
-                    ;
+            string outputHtml = htmlDoc
+                .Replace("{{CharsSummary}}", outputInfos.ToString())
+                .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ;
 
             string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(advenName, "[^가-힣a-zA-Z0-9 ]", "")}.html";
 
@@ -400,6 +403,7 @@ namespace MySetItem
 
             var searchTarget = guildUsers.Take(30);
 
+            int rank = 1;
             foreach (var charInfo in searchTarget)
             {
                 lblStat.Text = $"{++index} / {searchTarget.Count()} 조회중";
@@ -424,20 +428,23 @@ namespace MySetItem
                  */
                 outputInfos.AppendLine($"<tr>");
                 //<div class="col-11">
+                outputInfos.AppendLine($"<td>{rank++}</td>");
                 outputInfos.AppendLine($"<td><a href='{_dfMaxUrl}/character/{charInfo.ServerId}/{charInfo.CharacterKey}' target='_blank'>{charInfo.Name}</a></td>");
-                outputInfos.AppendLine($"<td>{charInfo.Fame}</td>");
+                outputInfos.AppendLine($"<td>{charInfo.Fame.GetValueOrDefault().ToString("#,##0")}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetName()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetSetPoint()}</td>");
                 outputInfos.AppendLine($"<td class='{CodeHelper.GetRarityColor(charSummary.GetSetGrade())}'>{charSummary.GetSetGrade()}</td>");
                 outputInfos.AppendLine($"<td>{charSummary.GetNextSetPoint()}</td>");
+                outputInfos.AppendLine($"<td>{(charInfo.Damage.HasValue ? $"데미지 : {charInfo.Damage.Value.ToString("#,##0")}" : $"버프력 : {charInfo.Buff.Value.ToString("#,##0")}" )}</td>");
 
                 outputInfos.AppendLine($"</tr>");
             }
 
             string htmlDoc = File.ReadAllText("layoutGuild.txt");
-            string outputHtml = htmlDoc.Replace("{{CharsSummary}}", outputInfos.ToString())
-
-                    ;
+            string outputHtml = htmlDoc
+                .Replace("{{CharsSummary}}", outputInfos.ToString())
+                .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ;
 
             string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(guildName, "[^가-힣a-zA-Z0-9 ]", "")}.html";
 

@@ -71,6 +71,8 @@ namespace Common.Utils
                 var anchor = charObject.SelectSingleNode(".//a");
                 var nameNode = charObject.SelectSingleNode(".//span[@class='charName']");
                 var fameNode = charObject.SelectSingleNode(".//span[contains(@class, 'fame-value')]");
+                var damageNode = charObject.SelectSingleNode(".//span[contains(@class, 'damage-score')]");
+                var buffNode = charObject.SelectSingleNode(".//span[contains(@class, 'buff-score')]");
 
                 if (anchor != null && nameNode != null && fameNode != null)
                 {
@@ -82,14 +84,38 @@ namespace Common.Utils
                         string server = parts[2];  // "/character/{서버}/{user key}" 구조
                         string userKey = parts[3];
                         string name = nameNode.InnerText.Trim();
-                        string fame = fameNode.InnerText.Trim();
+                        int? fame = null;
+                        try
+                        {
+                            if(fameNode == null) fame = null;
+                            else fame = Convert.ToInt32(fameNode.InnerText);
+                        }
+                        catch { fame = null; }
+
+                        long? damege = null;
+                        try
+                        {
+                            if(damageNode == null) damege = null;
+                            else damege = Convert.ToInt64(damageNode?.InnerText);
+                        }
+                        catch { damege = null; }
+
+                        long? buff = null;
+                        try
+                        {
+                            if(buffNode == null) buff = null;
+                            else buff = Convert.ToInt64(buffNode?.InnerText);
+                        }
+                        catch { buff = null; }
 
                         characterList.Add(new CharacterInfo
                         {
                             ServerId = server,
                             CharacterKey = userKey,
                             Name = name,
-                            Fame = fame
+                            Fame = fame,
+                            Damage = damege,
+                            Buff = buff
                         });
                     }
                 }

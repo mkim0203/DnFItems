@@ -84,6 +84,8 @@
             </div>
         </div>
 
+        <p class="text-right">조회 : {{SearchTime}}</p>
+
         <div class="row mt-4">
             <div class="col-md-4">
                 <a href="https://dfmax.xyz/character/{{ServerId}}/{{CharKey}}" class="btn btn-warning w-100" target="_blank">DFMAX 링크</a>

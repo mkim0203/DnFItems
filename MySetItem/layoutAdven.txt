@@ -44,6 +44,7 @@
 
 		<br/>
 
+		<p class="text-right">조회 : {{SearchTime}}</p>
 		<table class="table table-striped table-bordered" id="SetItemsInfo">
 			<thead>
 					<tr>
