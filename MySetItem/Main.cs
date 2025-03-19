@@ -108,17 +108,20 @@ namespace MySetItem
 
         public async Task RunAsync(string userId, string serverName)
         {
-            List<TimeLineItem> result = await DnfApiService.GetAllTimeLineAsync(userId, serverName);
-
-            if (result == null || result.Count == 0)
+            List<TimeLineItem> itemTimeLine = await DnfApiService.GetAllTimeLineAsync(userId, serverName);
+            
+            if (itemTimeLine == null || itemTimeLine.Count == 0)
             {
                 lblStat.Text = "캐릭터 정보가 조회되지 않았습니다.";
                 return;
             }
 
+            List<TimeLineRegion> regionTImeLine = await DnfApiService.GetAllTimeLineRegionAsync(userId, serverName);
+            List<TimeLineItem> spHellTimeLine = itemTimeLine.Where(x => x.IsSpHell).ToList();
+
             Console.WriteLine("===============");
             // SetItemName 기준으로 그룹화
-            var groupedItems = result
+            var groupedItems = itemTimeLine
                     .Where(x => string.IsNullOrEmpty(x.ConvertSetItem) == false)
                     .OrderBy(item => item.SlotOrder)
                     .ThenByDescending(item => item.ItemRarityLevel)
@@ -151,7 +154,7 @@ namespace MySetItem
             }
 
             // 레어리티 별 갯수
-            var rarityGroup = result
+            var rarityGroup = itemTimeLine
                     .GroupBy(item => item.ItemRarity)
                     .Select(group => new
                     {
@@ -164,7 +167,7 @@ namespace MySetItem
             string rarityY = JsonConvert.SerializeObject(rarityGroup.Select(x => x.Count));
 
             // 채널별 갯수
-            var channelGroup = result
+            var channelGroup = itemTimeLine
                     .GroupBy(item => item.GetChannelInfo)
                     .Select(group => new
                     {
@@ -176,7 +179,7 @@ namespace MySetItem
             string channelX = JsonConvert.SerializeObject(channelGroup.Select(x => x.Channel));
             string channelY = JsonConvert.SerializeObject(channelGroup.Select(x => x.Count));
 
-            var hellGroup = result
+            var hellGroup = itemTimeLine
                     .Where(x => x.IsBaseHell)
                     .GroupBy(item => item.ItemRarity)
                     .Select(group => new
@@ -189,7 +192,7 @@ namespace MySetItem
             string hellX = JsonConvert.SerializeObject(hellGroup.Select(x => x.Rarity));
             string hellY = JsonConvert.SerializeObject(hellGroup.Select(x => x.Count));
 
-            var spHellGroup = result
+            var spHellGroup = itemTimeLine
                    .Where(x => x.IsSpHell)
                    .GroupBy(item => item.ItemRarity)
                    .Select(group => new
@@ -202,7 +205,7 @@ namespace MySetItem
             string spHellX = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Rarity));
             string spHellY = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Count));
 
-            var weeklyGroup = result
+            var weeklyGroup = itemTimeLine
                    .Where(x => x.IsWeekly)
                    .GroupBy(item => item.DungeonName)
                    .Select(group => new
@@ -217,7 +220,7 @@ namespace MySetItem
 
             // 머리어깨, 상의, 하의, 벨트, 신발, 팔찌, 목걸이, 보조장비, 반지, 귀걸이, 마법석
             // ConvertSetItem & Slot 기준으로 그룹화 후 SetPoint가 가장 높은 항목 선택
-            var bestItems = result
+            var bestItems = itemTimeLine
                 .Where(item => string.IsNullOrEmpty(item.ConvertSetItem) == false)
                 .GroupBy(item => new { item.ConvertSetItem, item.Slot })
                 .Select(group => group.OrderByDescending(item => item.SetPoint).First())
@@ -272,6 +275,55 @@ namespace MySetItem
                 outputAvailableSetItem.AppendLine(setItem.OutputHtml());
             }
 
+            StringBuilder outputRegionItem = new StringBuilder();
+            // 레기온 정리
+            foreach (var region in regionTImeLine.OrderByDescending(x => x.Date))
+            {
+                outputRegionItem.AppendLine($"<h4>클리어 : {region.Date}</h4>");
+                //<div class="col-11">
+                outputRegionItem.AppendLine($"<div class='col-6'>");
+                outputRegionItem.AppendLine($"<table class='table table-bordered'>");
+                outputRegionItem.AppendLine($@"<tr>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:100px'>등급</th>
+    <th style='width:100px'>부위</th>
+</tr>");
+                foreach (var item in itemTimeLine.Where(x => x.Date == region.Date))
+                {
+                    outputRegionItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
+                }
+                outputRegionItem.AppendLine($"</table></div><br/>");
+            }
+
+            // 심연 목록
+            var spHellGroup2 = spHellTimeLine
+                    .OrderByDescending(x => x.Date)
+                    .GroupBy(item => item.Date)
+                    ;
+            StringBuilder outputSpHellItem = new StringBuilder();
+
+            foreach (var spHell in spHellGroup2)
+            {
+                outputSpHellItem.AppendLine($"<h4>{spHell.Key}</h4>");
+                //<div class="col-11">
+                outputSpHellItem.AppendLine($"<div class='col-6'>");
+                outputSpHellItem.AppendLine($"<table class='table table-bordered'>");
+                outputSpHellItem.AppendLine($@"<tr>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:100px'>등급</th>
+    <th style='width:100px'>부위</th>
+</tr>");
+                foreach (var item in spHell)
+                {
+                    outputSpHellItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
+                }
+                outputSpHellItem.AppendLine($"</table></div><br/>");
+            }
+
+            
+
 
             string htmlDoc = File.ReadAllText("layout.txt");
             string outputHtml = htmlDoc.Replace("{{CharInfo}}", $"{userId} / {serverName}")
@@ -294,6 +346,8 @@ namespace MySetItem
                     .Replace("{{WeeklyY}}", weeklyY)
                     .Replace("{{CharName}}", userId)
                     .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                    .Replace("{{ListRegionItem}}", outputRegionItem.ToString())
+                    .Replace("{{ListSpHellItem}}", outputSpHellItem.ToString())
                     ;
 
             string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(userId, "[^가-힣a-zA-Z0-9 ]", "")}.html";
@@ -460,9 +514,39 @@ namespace MySetItem
             lblStat.Text = "완료.";
         }
 
-        private void Main_Load(object sender, EventArgs e)
+        private async void Main_Load(object sender, EventArgs e)
         {
             cbServer.Items.AddRange(ServerList.ToArray());
+
+            this.Text += $"({Application.ProductVersion})";
+
+            if(await CheckNewVersion())
+            {
+                lblStat.Text += Environment.NewLine + "새로운 버전이 있습니다. 업데이트를 확인해주세요.";
+            }
+        }
+
+        private async Task<bool> CheckNewVersion()
+        {
+            try
+            {
+                GithubHelper helper = new GithubHelper("https://raw.githubusercontent.com/");
+                var version = await helper.GetLastVersionAsync();
+                Console.WriteLine(version);
+
+                Version currentVersion = new Version(Application.ProductVersion);
+
+                var newVersion = new Version(version);
+                if (currentVersion.CompareTo(newVersion) < 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch { return false; }
         }
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="Models\FusionItem.cs" />
     <Compile Include="Models\ICharSummary.cs" />
     <Compile Include="Models\TimeLineItem.cs" />
+    <Compile Include="Models\TimeLineRegion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DnfApiService.cs" />
     <Compile Include="Utils\DfDunDamHelper.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Utils\CodeHelper.cs" />
     <Compile Include="Utils\DfMaxHelper.cs" />
     <Compile Include="Utils\DnfApiHelper.cs" />
+    <Compile Include="Utils\GithubHelper.cs" />
     <Compile Include="Utils\HttpClientHelper.cs" />
   </ItemGroup>
   <ItemGroup>

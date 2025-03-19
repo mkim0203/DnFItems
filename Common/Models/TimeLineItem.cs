@@ -129,6 +129,7 @@ namespace Common.Models
             {
                 try
                 {
+                   if(string.IsNullOrEmpty(ItemName)) return false;
                     // 아이템 이름으로 구분
                     bool findItem = CodeHelper.SetItemWords.Any(x => ItemName.Contains(x));
                     if(findItem) return true;
@@ -250,6 +251,26 @@ namespace Common.Models
                     if (string.IsNullOrEmpty(DungeonName)) return false;
                     // 던전 이름으로 구분
                     bool findDungeon = CodeHelper.WeeklyDungeonNames.Any(x => DungeonName.Equals(x));
+                    if (findDungeon) return true;
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool IsRegion
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(DungeonName)) return false;
+                    // 던전 이름으로 구분
+                    bool findDungeon = CodeHelper.RegionDungeonNames.Any(x => DungeonName.Equals(x));
                     if (findDungeon) return true;
 
                     return false;

@@ -121,6 +121,46 @@ namespace Common.Utils
             }
         }
 
+        /// <summary>
+        /// 타임라인 조회 - 레기온 클리어
+        /// </summary>
+        /// <param name="charKey"></param>
+        /// <param name="serverName"></param>
+        /// <param name="stDate"></param>
+        /// <param name="edDate"></param>
+        /// <returns></returns>
+        public async Task<TimeLineResult> GetTimeLineRegionAsync(string charKey, string serverName, DateTime stDate, DateTime edDate)
+        {
+            string url = $"df/servers/{CodeHelper.GetServerId(serverName)}/characters/{charKey}/timeline?limit=100&startDate={stDate.ToString("yyyy-MM-dd")}&endDate={edDate.ToString("yyyy-MM-dd HH:mm")}&code=209&apikey={apiKey}";
+
+            // GET 요청 보내기
+            HttpResponseMessage response = await _client.GetAsync(url);
+
+            try
+            {
+                // 응답 본문을 문자열로 읽기
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // 결과 출력
+                Console.WriteLine("응답 상태 코드: " + response.StatusCode);
+                Console.WriteLine("응답 본문:\n" + responseBody);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<TimeLineResult>(responseBody);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
         public async Task<ItemInfoResult> GetItemInfoAsync(string findText, string itemRarity)
         {
             string url = $"df/items?itemName={findText.UrlEncoding()}&wordType=full&q=minLevel:115,maxLevel:115,rarity:{itemRarity.UrlEncoding()}&limit=30&apikey={apiKey}";

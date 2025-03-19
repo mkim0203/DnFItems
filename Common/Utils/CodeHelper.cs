@@ -189,6 +189,11 @@ namespace Common.Utils
             }
         }
 
+        public static List<string> RegionDungeonNames = new List<string>()
+        {
+            "찬사의 광장"
+        };
+
         public static List<string> WeeklyDungeonNames = new List<string>()
         {
             "죽음의 여신전",

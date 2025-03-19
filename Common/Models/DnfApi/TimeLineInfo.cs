@@ -36,6 +36,15 @@ namespace Common.Models.DnfApi
               "mistGear": false
             }
           },
+          {
+            "code" : 209,
+            "name" : "레기온 클리어",
+            "date" : "2025-03-14 23:53",
+            "data" : {
+                "regionName" : "베누스"
+            }
+          }
+
          */
 
         public int Code { get; set; }
@@ -64,6 +73,8 @@ namespace Common.Models.DnfApi
         public int? ChannelNo { get; set; }
         public string DungeonName { get; set; }
         public bool? MistGear { get; set; }
+
+        public string RegionName { get; set; }
     }
 
     public class TimeLineSummary

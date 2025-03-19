@@ -232,5 +232,40 @@ namespace DnFItems
 
             System.IO.File.WriteAllText("SetItem.json", JsonConvert.SerializeObject(allSetItems));
         }
+
+        [TestMethod]
+        public async Task GetAllTimeLineRegionTest()
+        {
+            DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
+
+            // 중천 update 일자
+            DateTime updateDate = new DateTime(2025, 1, 9);
+            DateTime stDate = updateDate;
+
+            var charInfo = await helper.GetCharInfoAsync("비상넨가", "디레지에");
+            if (charInfo != null)
+            {
+                do
+                {
+                    DateTime edDate = stDate.AddMonths(1);
+                    if (edDate > DateTime.Now)
+                    {
+                        edDate = DateTime.Now;
+                    }
+
+                    var result = await helper.GetTimeLineRegionAsync(charInfo.CharacterId, "디레지에", stDate, edDate);
+                    if (result != null)
+                    {
+                        Console.WriteLine($"{stDate.ToString("yyyy-MM-dd")} ~ {edDate.ToString("yyyy-MM-dd")} : {result.TimeLine?.Rows?.Count}");
+                        foreach (var item in result.TimeLine.Rows)
+                        {
+                            Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.RegionName}");
+                        }
+                    }
+
+                    stDate = edDate.AddDays(1);
+                } while (stDate < DateTime.Today);
+            }
+        }
     }
 }

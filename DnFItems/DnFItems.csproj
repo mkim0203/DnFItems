@@ -61,6 +61,7 @@
     <Compile Include="DfDunDamHelperTest.cs" />
     <Compile Include="DfmaxHelperTest.cs" />
     <Compile Include="DnfApiHelperTest.cs" />
+    <Compile Include="GithubHelperTest.cs" />
     <Compile Include="Utils\DfGearHelper.cs" />
     <Compile Include="Utils\HttpClientHelper.cs" />
     <Compile Include="UnitTest1.cs" />

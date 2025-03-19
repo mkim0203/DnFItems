@@ -170,7 +170,7 @@ namespace Common.Models
                 foreach (var item in _equiInfos.EquipmentInfos.OrderBy(x => x.SlotOrder))
                 {
                     string htmlText = $@"<tr>
-    <td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td>
+    <td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'>{(item.UpgradeInfo != null ? $" <img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.UpgradeInfo.ItemId}'" : "")}</td>
     <td>{item.SlotName}</td>
     <td>{item.Reinforce} {(string.IsNullOrWhiteSpace(item.AmplificationName) ? "강화" : "증폭")}</td>
     <td>{item.ItemName}{(item.UpgradeInfo != null ? $"<br/>({item.UpgradeInfo.ItemRarity}){item.UpgradeInfo.ItemName}" : "")}</td>
