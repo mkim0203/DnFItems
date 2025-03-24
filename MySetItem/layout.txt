@@ -248,26 +248,48 @@
             <button class="nav-link active" id="all-summary" data-bs-toggle="tab" data-bs-target="#all-summary-tab-pane" type="button" role="tab" aria-controls="all-summary-tab-pane" aria-selected="true">전체 획득정보</button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sp-hell-tab" data-bs-toggle="tab" data-bs-target="#sp-hell-tab-pane" type="button" role="tab" aria-controls="sp-hell-tab-pane" aria-selected="false">심연 : 종말</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="base-hell-tab" data-bs-toggle="tab" data-bs-target="#base-hell-tab-pane" type="button" role="tab" aria-controls="base-hell-tab-pane" aria-selected="false">종말</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="weekly-hell-tab" data-bs-toggle="tab" data-bs-target="#weekly-hell-tab-pane" type="button" role="tab" aria-controls="weekly-hell-tab-pane" aria-selected="false">상던</button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link" id="region-tab" data-bs-toggle="tab" data-bs-target="#region-tab-pane" type="button" role="tab" aria-controls="region-tab-pane" aria-selected="false">레기온</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="sp-hell-tab" data-bs-toggle="tab" data-bs-target="#sp-hell-tab-pane" type="button" role="tab" aria-controls="sp-hell-tab-pane" aria-selected="false">심연</button>
+            <button class="nav-link" id="daily-tab" data-bs-toggle="tab" data-bs-target="#daily-tab-pane" type="button" role="tab" aria-controls="daily-tab-pane" aria-selected="false">환요</button>
           </li>
-         
         </ul>
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="all-summary-tab-pane" role="tabpanel" aria-labelledby="all-summary-tab" tabindex="0">
                 <h3 class="mt-5 text-center">획득 정보 (레전더리 이상)</h3>
+                {{ListCountSummary}}
+                <br/>
                 {{ListSetItem}}
+            </div>
+            <div class="tab-pane fade" id="sp-hell-tab-pane" role="tabpanel" aria-labelledby="sp-hell-tab" tabindex="0">
+                <h3 class="mt-5 text-center">심연 : 종말 획득 정보</h3>
+                {{ListSpHellItem}}
+            </div>
+            <div class="tab-pane fade" id="base-hell-tab-pane" role="tabpanel" aria-labelledby="base-hell-tab" tabindex="0">
+                <h3 class="mt-5 text-center">종말 획득 정보</h3>
+                {{ListBaseHellItem}}
+            </div>
+            <div class="tab-pane fade" id="weekly-hell-tab-pane" role="tabpanel" aria-labelledby="weekly-hell-tab" tabindex="0">
+                <h3 class="mt-5 text-center">상던 획득 정보</h3>
+                {{ListWeeklyItem}}
             </div>
             <div class="tab-pane fade" id="region-tab-pane" role="tabpanel" aria-labelledby="region-tab" tabindex="0">
                 <h3 class="mt-5 text-center">베누스 획득 정보</h3>
                 {{ListRegionItem}}
             </div>
-            <div class="tab-pane fade" id="sp-hell-tab-pane" role="tabpanel" aria-labelledby="sp-hell-tab" tabindex="0">
-                <h3 class="mt-5 text-center">심연 획득 정보</h3>
-                {{ListSpHellItem}}
+            <div class="tab-pane fade" id="daily-tab-pane" role="tabpanel" aria-labelledby="daily-tab" tabindex="0">
+                <h3 class="mt-5 text-center">환요 획득 정보</h3>
+                {{ListDailyItem}}
             </div>
         </div>
     

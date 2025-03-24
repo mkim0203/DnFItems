@@ -158,6 +158,7 @@ namespace Common.Utils
                     _allDungeonNames.AddRange(DailyDungeonNames);
                     _allDungeonNames.AddRange(BaseDungeonNames);
                     _allDungeonNames.AddRange(HellDungeonNames);
+                    _allDungeonNames.AddRange(RegionDungeonNames);
                 }
                 return _allDungeonNames; 
             }
@@ -196,13 +197,13 @@ namespace Common.Utils
 
         public static List<string> WeeklyDungeonNames = new List<string>()
         {
-            "죽음의 여신전",
+            //"죽음의 여신전",
             "침묵의 성소",
             "애쥬어 메인",
             "달이 잠긴 호수",
             "꿈결 속 솔리다리스",
-            "꿈결 속 흰 구름 계곡",
-            "미의 여신 베누스"
+            "꿈결 속 흰 구름 계곡"
+            //"미의 여신 베누스"
         };
 
         public static List<string> DailyDungeonNames = new List<string>()

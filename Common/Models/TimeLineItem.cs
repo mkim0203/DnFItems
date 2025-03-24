@@ -25,14 +25,15 @@ namespace Common.Models
                 MistGear = row.Data.MistGear;
 
                 var findItem = CodeHelper.ItemsLv115.FirstOrDefault(x => x.ItemId.Equals(row.Data.ItemId));
-                if(findItem != null)
+                if (findItem != null)
                 {
                     Slot = findItem.ItemType == "무기" ? findItem.ItemType : findItem.ItemTypeDetail;
                     int sortNum = -1;
                     bool findSlot = CodeHelper.SlotOrder.TryGetValue(Slot, out sortNum);
-                    if(findSlot) SlotOrder = sortNum;
+                    if (findSlot) SlotOrder = sortNum;
                     ItemType = findItem.ItemType;
-                } else
+                }
+                else
                 {
                     // 115 던전 에서 나온거면 무기로 판단함 (레거시 정보 추가하면 코드 빼도됨)
                     if (IsLv115Item == true) { Slot = "무기"; }
@@ -41,7 +42,7 @@ namespace Common.Models
                 // 셋트 아이템 정보 구하기....
                 // api로 하나씩 조회할려면 너무 많이 조회해야함
                 if (string.IsNullOrEmpty(row.Data.ItemName) == false) SetItemName = GetSetName(row.Data.ItemName);
-                
+
             }
             return this;
         }
@@ -52,29 +53,29 @@ namespace Common.Models
             if (itemName.IndexOf("황금향") != -1) return "영원히 이어지는 황금향 세트";
 
             //"정화", //"칠흑의 정화 세트",
-            if(itemName.IndexOf("정화") != -1) return "칠흑의 정화 세트";
+            if (itemName.IndexOf("정화") != -1) return "칠흑의 정화 세트";
             //"행운", //"세렌디피티 세트",
-            if(itemName.IndexOf("행운") != -1) return "세렌디피티 세트";
+            if (itemName.IndexOf("행운") != -1) return "세렌디피티 세트";
             //"한계", //"한계를 넘어선 에너지 세트",
-            if(itemName.IndexOf("한계") != -1) return "한계를 넘어선 에너지 세트";
+            if (itemName.IndexOf("한계") != -1) return "한계를 넘어선 에너지 세트";
             //"페어리", //"소울 페어리 세트",
             if (itemName.IndexOf("페어리") != -1) return "소울 페어리 세트";
             //"자연", //"압도적인 자연 세트",
-            if(itemName.IndexOf("자연") != -1) return "압도적인 자연 세트";
+            if (itemName.IndexOf("자연") != -1) return "압도적인 자연 세트";
             //"발키리", //"고대 전장의 발키리 세트",
-            if(itemName.IndexOf("발키리") != -1) return "고대 전장의 발키리 세트";
+            if (itemName.IndexOf("발키리") != -1) return "고대 전장의 발키리 세트";
             //"여우", //"에테리얼 오브 아츠 세트",
-            if(itemName.IndexOf("여우") != -1) return "에테리얼 오브 아츠 세트";
+            if (itemName.IndexOf("여우") != -1) return "에테리얼 오브 아츠 세트";
             //"그림자", //"그림자에 숨은 죽음 세트",
-            if(itemName.IndexOf("여우") == -1 && itemName.IndexOf("그림자") != -1) return "그림자에 숨은 죽음 세트";
+            if (itemName.IndexOf("여우") == -1 && itemName.IndexOf("그림자") != -1) return "그림자에 숨은 죽음 세트";
             //"무리의", //"무리 사냥의 길잡이 세트",
-            if(itemName.IndexOf("무리의") != -1) return "무리 사냥의 길잡이 세트";
+            if (itemName.IndexOf("무리의") != -1) return "무리 사냥의 길잡이 세트";
             //"마력의", //"마력의 영역 세트",
-            if(itemName.IndexOf("마력의") != -1) return "마력의 영역 세트";
+            if (itemName.IndexOf("마력의") != -1) return "마력의 영역 세트";
             //"용제", "용왕", "용투", "용의", //"용투장의 난 세트"
-            if(itemName.IndexOf("용제") != -1 
-                || itemName.IndexOf("용왕") != -1 
-                || itemName.IndexOf("용투") != -1 
+            if (itemName.IndexOf("용제") != -1
+                || itemName.IndexOf("용왕") != -1
+                || itemName.IndexOf("용투") != -1
                 || itemName.IndexOf("용의") != -1) return "용투장의 난 세트";
 
             return string.Empty;
@@ -82,6 +83,35 @@ namespace Common.Models
 
         public int Code { get; set; }
         public string Date { get; set; }
+
+        public string DateDay
+        {
+            get
+            {
+                try
+                {
+                    return Date.Substring(0, 10);
+                }
+                catch {
+                    return Date;
+                }
+            }
+        }
+        public string DateMonth
+        {
+            get
+            {
+                try
+                {
+                    return Date.Substring(0, 7);
+                }
+                catch
+                {
+                    return Date;
+                }
+            }
+        }
+
         /// <summary>
         /// 획득 방법
         /// </summary>
@@ -129,15 +159,15 @@ namespace Common.Models
             {
                 try
                 {
-                   if(string.IsNullOrEmpty(ItemName)) return false;
+                    if (string.IsNullOrEmpty(ItemName)) return false;
                     // 아이템 이름으로 구분
                     bool findItem = CodeHelper.SetItemWords.Any(x => ItemName.Contains(x));
-                    if(findItem) return true;
+                    if (findItem) return true;
 
                     if (string.IsNullOrEmpty(DungeonName)) return false;
                     // 던전 이름으로 구분
                     bool findDungeon = CodeHelper.AllDungeonNames.Any(x => DungeonName.Equals(x));
-                    if(findDungeon) return true;
+                    if (findDungeon) return true;
 
                     // 레거시 검색..
 
@@ -271,6 +301,46 @@ namespace Common.Models
                     if (string.IsNullOrEmpty(DungeonName)) return false;
                     // 던전 이름으로 구분
                     bool findDungeon = CodeHelper.RegionDungeonNames.Any(x => DungeonName.Equals(x));
+                    if (findDungeon) return true;
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool IsDaily
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(DungeonName)) return false;
+                    // 던전 이름으로 구분
+                    bool findDungeon = CodeHelper.DailyDungeonNames.Any(x => DungeonName.Equals(x));
+                    if (findDungeon) return true;
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool IsBaseDungeon
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(DungeonName)) return false;
+                    // 던전 이름으로 구분
+                    bool findDungeon = CodeHelper.BaseDungeonNames.Any(x => DungeonName.Equals(x));
                     if (findDungeon) return true;
 
                     return false;
