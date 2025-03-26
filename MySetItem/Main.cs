@@ -661,7 +661,7 @@ namespace MySetItem
         private async Task RunAdvenStatAsync(string advenName)
         {
             Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
-            var charInfos = await dfmax.GetAdvenUsersAsync("이건머임s");
+            var charInfos = await dfmax.GetAdvenUsersAsync(advenName);
 
             if (charInfos == null || charInfos.Count == 0)
             {
