@@ -1,6 +1,7 @@
 ﻿using Common.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,6 +84,36 @@ namespace Common.Models
 
         public int Code { get; set; }
         public string Date { get; set; }
+
+        public int WeekNumber
+        {
+            get
+            {
+                // 기준 주차 중천 시즌 시작일 (2025-01-09 06:00)
+                DateTime baseDate = new DateTime(2025, 1, 9, 6, 0, 0);
+
+                try
+                {
+                    // 문자열을 DateTime으로 변환
+                    if (!DateTime.TryParseExact(Date, "yyyy-MM-dd HH:mm",
+                                                CultureInfo.InvariantCulture,
+                                                DateTimeStyles.None, out DateTime targetDate))
+                    {
+                        //throw new ArgumentException("잘못된 날짜 형식입니다.");
+                        return 0;
+                    }
+
+                    // 기준일과의 차이 계산
+                    TimeSpan difference = targetDate - baseDate;
+
+                    // 주차 계산 (0주차부터 시작하므로 +1)
+                    int weekNumber = (difference.Days / 7) + 1;
+
+                    return weekNumber;
+                }
+                catch { return 0; }
+            }
+        }
 
         public string DateDay
         {

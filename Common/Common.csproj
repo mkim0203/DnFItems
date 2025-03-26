@@ -49,8 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Models\AllTimeLineSummary.cs" />
     <Compile Include="Models\AvailableSetItem.cs" />
     <Compile Include="Models\CharSummary.cs" />
+    <Compile Include="Models\Dashboard.cs" />
     <Compile Include="Models\DfDunDam\CharDetailInfo.cs" />
     <Compile Include="Models\DfDunDam\CharInfo.cs" />
     <Compile Include="Models\DfDunDam\CharResult.cs" />

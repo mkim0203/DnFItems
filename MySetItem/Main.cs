@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -51,6 +52,7 @@ namespace MySetItem
                         {
                             _serverList.Add("길드");
                             _serverList.Insert(0, "모험단");
+                            _serverList.Add("모험단 통계");
                         }
                     }
                     catch
@@ -92,6 +94,10 @@ namespace MySetItem
                 {
                     await RunGuildAsync(name);
                 }
+                else if(serverName.Equals("모험단 통계"))
+                {
+                    await RunAdvenStatAsync(name);
+                }
                 else
                 {
                     await RunAsync(name, serverName);
@@ -103,7 +109,6 @@ namespace MySetItem
             btnSearch.Enabled = true;
             
         }
-
 
 
         public async Task RunAsync(string userId, string serverName)
@@ -118,40 +123,7 @@ namespace MySetItem
 
             List<TimeLineRegion> regionTimeLine = await DnfApiService.GetAllTimeLineRegionAsync(userId, serverName);
 
-            var allBeg = itemTimeLine.Where(x => x.ItemRarity.Equals("태초"));
-            var allEpi = itemTimeLine.Where(x => x.ItemRarity.Equals("에픽"));
-            var allLeg = itemTimeLine.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allBaseHell = itemTimeLine.Where(x => x.IsBaseHell);
-            var allBaseHellBeg = allBaseHell.Where(x => x.ItemRarity.Equals("태초"));
-            var allBaseHellEpi = allBaseHell.Where(x => x.ItemRarity.Equals("에픽"));
-            var allBaseHellLeg = allBaseHell.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allSpHell = itemTimeLine.Where(x => x.IsSpHell);
-            var allSpHellBeg = allSpHell.Where(x => x.ItemRarity.Equals("태초"));
-            var allSphellEpi = allSpHell.Where(x => x.ItemRarity.Equals("에픽"));
-            var allSphellLeg = allSpHell.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allWeekly = itemTimeLine.Where(x => x.IsWeekly);
-            var allWeeklyBeg = allWeekly.Where(x => x.ItemRarity.Equals("태초"));
-            var allWeeklyEpi = allWeekly.Where(x => x.ItemRarity.Equals("에픽"));
-            var allWeeklyLeg = allWeekly.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allRegion = itemTimeLine.Where(x => x.IsRegion);
-            var allRegionBeg = allRegion.Where(x => x.ItemRarity.Equals("태초"));
-            var allRegionEpi = allRegion.Where(x => x.ItemRarity.Equals("에픽"));
-            var allRegionLeg = allRegion.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allDaily = itemTimeLine.Where(x => x.IsDaily);
-            var allDailyBeg = allDaily.Where(x => x.ItemRarity.Equals("태초"));
-            var allDailyEpi = allDaily.Where(x => x.ItemRarity.Equals("에픽"));
-            var allDailyLeg = allDaily.Where(x => x.ItemRarity.Equals("레전더리"));
-
-            var allBaseDungeon = itemTimeLine.Where(x => x.IsBaseDungeon);
-            var allBaseDungeonBeg = allBaseDungeon.Where(x => x.ItemRarity.Equals("태초"));
-            var allBaseDungeonEpi = allBaseDungeon.Where(x => x.ItemRarity.Equals("에픽"));
-            var allBaseDungeonLeg = allBaseDungeon.Where(x => x.ItemRarity.Equals("레전더리"));
-
+            AllTimeLineSummary charAllItem = new AllTimeLineSummary(itemTimeLine);
 
             Console.WriteLine("===============");
             // SetItemName 기준으로 그룹화
@@ -282,14 +254,14 @@ namespace MySetItem
 
                 // 전체, 헬, 심연, 상던, 레기온, 환요
 
-                outputListCountSummary.AppendLine($"<tr><td>전체</td><td>{allBeg.Count()}</td><td>{allEpi.Count()}</td><td>{allLeg.Count()}</td><td>{itemTimeLine.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>전체</td><td>{charAllItem.AllBeg.Count()}</td><td>{charAllItem.AllEpi.Count()}</td><td>{charAllItem.AllLeg.Count()}</td><td>{itemTimeLine.Count()}</td></tr>");
                 
-                outputListCountSummary.AppendLine($"<tr><td>심연 : 종말</td><td>{allSpHellBeg.Count()}</td><td>{allSphellEpi.Count()}</td><td>{allSphellLeg.Count()}</td><td>{allSpHell.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>종말</td><td>{allBaseHellBeg.Count()}</td><td>{allBaseHellEpi.Count()}</td><td>{allBaseHellLeg.Count()}</td><td>{allBaseHell.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>상던</td><td>{allWeeklyBeg.Count()}</td><td>{allWeeklyEpi.Count()}</td><td>{allWeeklyLeg.Count()}</td><td>{allWeekly.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>레기온</td><td>{allRegionBeg.Count()}</td><td>{allRegionEpi.Count()}</td><td>{allRegionLeg.Count()}</td><td>{allRegion.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>환요</td><td>{allDailyBeg.Count()}</td><td>{allDailyEpi.Count()}</td><td>{allDailyLeg.Count()}</td><td>{allDaily.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>기본던전</td><td>{allBaseDungeonBeg.Count()}</td><td>{allBaseDungeonEpi.Count()}</td><td>{allBaseDungeonLeg.Count()}</td><td>{allBaseDungeon.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>심연 : 종말</td><td>{charAllItem.AllSpHellBeg.Count()}</td><td>{charAllItem.AllSphellEpi.Count()}</td><td>{charAllItem.AllSphellLeg.Count()}</td><td>{charAllItem.AllSpHell.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>종말</td><td>{charAllItem.AllBaseHellBeg.Count()}</td><td>{charAllItem.AllBaseHellEpi.Count()}</td><td>{charAllItem.AllBaseHellLeg.Count()}</td><td>{charAllItem.AllBaseHell.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>상던</td><td>{charAllItem.AllWeeklyBeg.Count()}</td><td>{charAllItem.AllWeeklyEpi.Count()}</td><td>{charAllItem.AllWeeklyLeg.Count()}</td><td>{charAllItem.AllWeekly.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>레기온</td><td>{charAllItem.AllRegionBeg.Count()}</td><td>{charAllItem.AllRegionEpi.Count()}</td><td>{charAllItem.AllRegionLeg.Count()}</td><td>{charAllItem.AllRegion.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>환요</td><td>{charAllItem.AllDailyBeg.Count()}</td><td>{charAllItem.AllDailyEpi.Count()}</td><td>{charAllItem.AllDailyLeg.Count()}</td><td>{charAllItem.AllDaily.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>기본던전</td><td>{charAllItem.AllBaseDungeonBeg.Count()}</td><td>{charAllItem.AllBaseDungeonEpi.Count()}</td><td>{charAllItem.AllBaseDungeonLeg.Count()}</td><td>{charAllItem.AllBaseDungeon.Count()}</td></tr>");
 
                 outputListCountSummary.AppendLine($"</table></div><br/>");
             }
@@ -348,7 +320,7 @@ namespace MySetItem
 
             if(regionTimeLine.Count > 0)
             {
-                outputRegionItem.AppendLine($"<h3 class='mt-5 text-center'>획득 : {allRegionBeg.Count()} / {allRegionEpi.Count()} / {allRegionLeg.Count()}</h3>");
+                outputRegionItem.AppendLine($"<h3 class='mt-5 text-center'>획득 : {charAllItem.AllRegionBeg.Count()} / {charAllItem.AllRegionEpi.Count()} / {charAllItem.AllRegionLeg.Count()}</h3>");
             }
             // 레기온 정리
             foreach (var region in regionTimeLine.OrderByDescending(x => x.Date))
@@ -363,7 +335,7 @@ namespace MySetItem
     <th style='width:100px'>등급</th>
     <th style='width:100px'>부위</th>
 </tr>");
-                foreach (var item in allRegion.Where(x => x.Date == region.Date))
+                foreach (var item in charAllItem.AllRegion.Where(x => x.Date == region.Date))
                 {
                     outputRegionItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
                 }
@@ -373,7 +345,7 @@ namespace MySetItem
 
             #region 심연
             // 심연 목록
-            var spHellGroup2 = allSpHell
+            var spHellGroup2 = charAllItem.AllSpHell
                     .OrderByDescending(x => x.Date)
                     .GroupBy(item => item.Date)
                     ;
@@ -381,7 +353,7 @@ namespace MySetItem
 
             if (spHellGroup2.Count() > 0)
             {
-                outputSpHellItem.AppendLine($"<h3 class='mt-5 text-center'> 총 횟수 : {spHellGroup2.Count()}, 획득 : {allSpHellBeg.Count()} / {allSphellEpi.Count()} / {allSphellLeg.Count()}</h3>");
+                outputSpHellItem.AppendLine($"<h3 class='mt-5 text-center'> 총 횟수 : {spHellGroup2.Count()}, 획득 : {charAllItem.AllSpHellBeg.Count()} / {charAllItem.AllSphellEpi.Count()} / {charAllItem.AllSphellLeg.Count()}</h3>");
             }
 
             foreach (var spHell in spHellGroup2)
@@ -406,7 +378,7 @@ namespace MySetItem
 
             #region 헬
             // 헬 목록
-            var baseHellGroup = allBaseHell
+            var baseHellGroup = charAllItem.AllBaseHell
                     .OrderByDescending(x => x.Date)
                     .GroupBy(item => item.DateDay)
                     ;
@@ -414,7 +386,7 @@ namespace MySetItem
 
             if (baseHellGroup.Count() > 0)
             {
-                outputBaseHellItem.AppendLine($"<h3 class='mt-5 text-center'> 획득 : {allBaseHellBeg.Count()} / {allBaseHellEpi.Count()} / {allBaseHellLeg.Count()}</h3>");
+                outputBaseHellItem.AppendLine($"<h3 class='mt-5 text-center'> 획득 : {charAllItem.AllBaseHellBeg.Count()} / {charAllItem.AllBaseHellEpi.Count()} / {charAllItem.AllBaseHellLeg.Count()}</h3>");
             }
 
             foreach (var baseHell in baseHellGroup)
@@ -442,7 +414,7 @@ namespace MySetItem
             #endregion
 
             #region 상급던전
-            var weeklyGroup2 = allWeekly
+            var weeklyGroup2 = charAllItem.AllWeekly
                     .OrderByDescending(x => x.DateDay)
                     .GroupBy(item => item.DateDay)
                     ;
@@ -461,19 +433,19 @@ namespace MySetItem
 </tr>");
 
                 outputWeeklyItem.AppendLine($@"<tr><td>전체</td>
-    <td>{allWeeklyBeg.Count()}</td>
-    <td>{allWeeklyEpi.Count()}</td>
-    <td>{allWeeklyLeg.Count()}</td>
-    <td>{allWeekly.Count()}</td>
+    <td>{charAllItem.AllWeeklyBeg.Count()}</td>
+    <td>{charAllItem.AllWeeklyEpi.Count()}</td>
+    <td>{charAllItem.AllWeeklyLeg.Count()}</td>
+    <td>{charAllItem.AllWeekly.Count()}</td>
 </tr>");
 
                 foreach (string dungeonName in CodeHelper.WeeklyDungeonNames)
                 {
                     outputWeeklyItem.Append($@"<tr><td>{dungeonName}</td>
-    <td>{allWeeklyBeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allWeeklyEpi.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allWeeklyLeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allWeekly.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllWeeklyBeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllWeeklyEpi.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllWeeklyLeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllWeekly.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
 </tr>");
                 }
 
@@ -505,7 +477,7 @@ namespace MySetItem
             #endregion
 
             #region 환요
-            var dailyGroup = allDaily
+            var dailyGroup = charAllItem.AllDaily
                     .OrderByDescending(x => x.Date)
                     .GroupBy(item => item.DateMonth)
                     ;
@@ -524,19 +496,19 @@ namespace MySetItem
 </tr>");
 
                 outputDailyItem.AppendLine($@"<tr><td>전체</td>
-    <td>{allDailyBeg.Count()}</td>
-    <td>{allDailyEpi.Count()}</td>
-    <td>{allDailyLeg.Count()}</td>
-    <td>{allDaily.Count()}</td>
+    <td>{charAllItem.AllDailyBeg.Count()}</td>
+    <td>{charAllItem.AllDailyEpi.Count()}</td>
+    <td>{charAllItem.AllDailyLeg.Count()}</td>
+    <td>{charAllItem.AllDaily.Count()}</td>
 </tr>");
 
                 foreach (string dungeonName in CodeHelper.DailyDungeonNames)
                 {
                     outputDailyItem.Append($@"<tr><td>{dungeonName}</td>
-    <td>{allDailyBeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allDailyEpi.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allDailyLeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
-    <td>{allDaily.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllDailyBeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllDailyEpi.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllDailyLeg.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
+    <td>{charAllItem.AllDaily.Where(x => x.DungeonName.Equals(dungeonName)).Count()}</td>
 </tr>");
                 }
 
@@ -685,6 +657,142 @@ namespace MySetItem
             lblStat.Text = "완료.";
         }
 
+
+        private async Task RunAdvenStatAsync(string advenName)
+        {
+            Common.Utils.DfMaxHelper dfmax = new Common.Utils.DfMaxHelper(_dfMaxUrl);
+            var charInfos = await dfmax.GetAdvenUsersAsync("이건머임s");
+
+            if (charInfos == null || charInfos.Count == 0)
+            {
+                return;
+            }
+
+
+            List<DashboardItem> hellDashboardItems = new List<DashboardItem>();
+            List<DashboardItem> allDashboardItems = new List<DashboardItem>();
+
+            int curWeekNumber = DateTime.Now.WeekNumber();
+
+            int index = 0;
+            foreach (var charInfo in charInfos.OrderByDescending(x => x.Fame))
+            {
+                lblStat.Text = $"{++index} / {charInfos.Count} 조회중";
+                List<TimeLineItem> itemTimeLine = await DnfApiService.GetAllTimeLineAsync(charInfo.Name, charInfo.ServerId, true);
+
+                AllTimeLineSummary summary = new AllTimeLineSummary(itemTimeLine);
+
+
+                for (int i = 1; i <= curWeekNumber; i++)
+                {
+                    hellDashboardItems.Add(new DashboardItem()
+                    {
+                        CharName = charInfo.Name,
+                        WeekNumber = i,
+                        BegCount = summary.AllBaseHellBeg.Where(x => x.WeekNumber == i).Count(),
+                        EpiCount = summary.AllBaseHellEpi.Where(x => x.WeekNumber == i).Count(),
+                        LegCount = summary.AllBaseHellLeg.Where(x => x.WeekNumber == i).Count()
+                    });
+                    allDashboardItems.Add(new DashboardItem()
+                    {
+                        CharName = charInfo.Name,
+                        WeekNumber = i,
+                        BegCount = summary.AllBeg.Where(x => x.WeekNumber == i).Count(),
+                        EpiCount = summary.AllEpi.Where(x => x.WeekNumber == i).Count(),
+                        LegCount = summary.AllLeg.Where(x => x.WeekNumber == i).Count()
+                    });
+
+                }
+            }
+
+            StringBuilder outputHellInfos = new StringBuilder();
+            StringBuilder outputAllInfos = new StringBuilder();
+            StringBuilder outputCharInfos = new StringBuilder();
+
+            for (int i = 1; i <= curWeekNumber; i++)
+            {
+                var tempHell = hellDashboardItems.Where(x => x.WeekNumber == i);
+                var tempAll = allDashboardItems.Where(x => x.WeekNumber == i);
+
+                outputHellInfos.AppendLine($@"<tr>
+    <td>{i} ({tempHell.First().StartDate.ToString("yy-MM-dd HH:mm")} ~ {tempHell.First().EndDate.ToString("yy-MM-dd HH:mm")})</td>
+    <td>{tempHell.Sum(x => x.BegCount)}</td>
+    <td>{tempHell.Sum(x => x.EpiCount)}</td>
+    <td>{tempHell.Sum(x => x.LegCount)}</td>
+    <td>{tempHell.Sum(x => x.TotalCount)}</td>
+    <td><input type='number' name='ClearCount' min='0' max='2000' /></td>
+</tr>");
+
+                outputAllInfos.AppendLine($@"<tr>
+    <td>{i} ({tempAll.First().StartDate.ToString("yy-MM-dd HH:mm")} ~ {tempAll.First().EndDate.ToString("yy-MM-dd HH:mm")})</td>
+    <td>{tempAll.Sum(x => x.BegCount)}</td>
+    <td>{tempAll.Sum(x => x.EpiCount)}</td>
+    <td>{tempAll.Sum(x => x.LegCount)}</td>
+    <td>{tempAll.Sum(x => x.TotalCount)}</td>
+</tr>");
+            }
+
+            outputHellInfos.AppendLine($@"<tr>
+    <td>합계</td>
+    <td id='SumHellBeg'>{hellDashboardItems.Sum(x => x.BegCount)}</td>
+    <td id='SumHellEpi'>{hellDashboardItems.Sum(x => x.EpiCount)}</td>
+    <td id='SumHellLeg'>{hellDashboardItems.Sum(x => x.LegCount)}</td>
+    <td>{hellDashboardItems.Sum(x => x.TotalCount)}</td>
+    <td id='SumClearCount'></td>
+</tr>");
+
+            outputHellInfos.AppendLine($@"<tr>
+    <td>비율</td>
+    <td id='HellBegRate'></td>
+    <td id='HellEpiRate'></td>
+    <td id='HellLegRate'></td>
+    <td></td>
+    <td></td>
+</tr>");
+
+            outputAllInfos.AppendLine($@"<tr>
+    <td>합계</td>
+    <td>{allDashboardItems.Sum(x => x.BegCount)}</td>
+    <td>{allDashboardItems.Sum(x => x.EpiCount)}</td>
+    <td>{allDashboardItems.Sum(x => x.LegCount)}</td>
+    <td>{allDashboardItems.Sum(x => x.TotalCount)}</td>
+</tr>");
+
+            // 캐릭터 주차별 획득정보
+            foreach(var item in allDashboardItems)
+            {
+                outputCharInfos.AppendLine($@"<tr>
+    <td>{item.CharName}</td>
+    <td>{item.WeekNumber} ({item.StartDate.ToString("yy-MM-dd HH:mm")} ~ {item.EndDate.ToString("yy-MM-dd HH:mm")})</td>
+    <td>{item.BegCount}</td>
+    <td>{item.EpiCount}</td>
+    <td>{item.LegCount}</td>
+    <td>{item.TotalCount}</td>
+</tr>");
+            }
+
+
+            string htmlDoc = File.ReadAllText("layoutAdvenStat.txt");
+            string outputHtml = htmlDoc
+                .Replace("{{AllDashBoardSummary}}", outputAllInfos.ToString())
+                .Replace("{{HellDashBoardSummary}}", outputHellInfos.ToString())
+                .Replace("{{CharDashBoardSummary}}", outputCharInfos.ToString())
+                .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ;
+
+            string fileName = $".\\output\\{DateTime.Now.ToString("yyyyMMddHHmmss")}_{Regex.Replace(advenName, "[^가-힣a-zA-Z0-9 ]", "")}.html";
+
+            File.WriteAllText(fileName, outputHtml);
+
+            // 기본 브라우저에서 HTML 파일 열기
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = true  // 기본 프로그램(웹 브라우저)으로 실행
+            });
+
+            lblStat.Text = "완료.";
+        }
         public async Task RunGuildAsync(string guildName)
         {
             DateTime stdt = DateTime.Now;

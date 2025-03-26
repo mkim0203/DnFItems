@@ -64,13 +64,13 @@
             this.cbServer.FormattingEnabled = true;
             this.cbServer.Location = new System.Drawing.Point(512, 38);
             this.cbServer.Name = "cbServer";
-            this.cbServer.Size = new System.Drawing.Size(189, 55);
+            this.cbServer.Size = new System.Drawing.Size(250, 55);
             this.cbServer.TabIndex = 2;
             // 
             // btnSearch
             // 
             this.btnSearch.Font = new System.Drawing.Font("맑은 고딕", 13.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnSearch.Location = new System.Drawing.Point(717, 34);
+            this.btnSearch.Location = new System.Drawing.Point(795, 34);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(128, 62);
             this.btnSearch.TabIndex = 3;
@@ -84,7 +84,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 114);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(894, 100);
+            this.panel1.Size = new System.Drawing.Size(967, 100);
             this.panel1.TabIndex = 4;
             // 
             // lblStat
@@ -93,7 +93,7 @@
             this.lblStat.Font = new System.Drawing.Font("맑은 고딕", 13.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lblStat.Location = new System.Drawing.Point(0, 0);
             this.lblStat.Name = "lblStat";
-            this.lblStat.Size = new System.Drawing.Size(894, 100);
+            this.lblStat.Size = new System.Drawing.Size(967, 100);
             this.lblStat.TabIndex = 0;
             this.lblStat.Text = "Nugget - 누깃";
             this.lblStat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -107,14 +107,14 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(894, 114);
+            this.panel2.Size = new System.Drawing.Size(967, 114);
             this.panel2.TabIndex = 5;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(894, 214);
+            this.ClientSize = new System.Drawing.Size(967, 214);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

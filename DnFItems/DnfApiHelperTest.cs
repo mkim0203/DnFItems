@@ -1,10 +1,12 @@
 ﻿using Common.Models;
 using Common.Models.DnfApi;
+using Common.Services;
 using Common.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DnFItems
@@ -266,6 +268,37 @@ namespace DnFItems
                     stDate = edDate.AddDays(1);
                 } while (stDate < DateTime.Today);
             }
+        }
+
+        [TestMethod]
+        public async Task 헬기준_아이템_획득정보_통계()
+        {
+            List<TimeLineItem> itemTimeLine = await DnfApiService.GetAllTimeLineAsync("비상넨가", "디레지에");
+
+            int curWeekNumber = DateTime.Now.WeekNumber();
+            Console.WriteLine(curWeekNumber);
+
+            AllTimeLineSummary summary = new AllTimeLineSummary(itemTimeLine);
+            
+            List<DashboardItem> hellDashboardItems = new List<DashboardItem>();
+            for(int i = 1; i <= curWeekNumber; i++)
+            {
+                var weekItems = itemTimeLine.Where(x => x.WeekNumber == i).ToList();
+                hellDashboardItems.Add(new DashboardItem()
+                {
+                    CharName= "비상넨가",
+                    WeekNumber = i,
+                    BegCount = summary.AllBaseHellBeg.Where(x => x.WeekNumber == i).Count(),
+                    EpiCount = summary.AllBaseHellEpi.Where(x => x.WeekNumber == i).Count(),
+                    LegCount = summary.AllBaseHellLeg.Where(x => x.WeekNumber == i).Count()
+                });
+            }
+
+            foreach(var item in hellDashboardItems)
+            {
+                Console.WriteLine(item.ToString());
+            }
+
         }
     }
 }

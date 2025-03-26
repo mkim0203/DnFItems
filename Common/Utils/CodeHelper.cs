@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,6 +11,9 @@ namespace Common.Utils
 {
     public static class CodeHelper
     {
+        // 중천 시즌 시작일 (2025-01-09 06:00)
+        public static readonly DateTime SeasonTheNewWave = new DateTime(2025, 1, 9, 6, 0, 0);
+
         public static string GetServerId(string serverName)
         {
             string serverId = "";
@@ -256,6 +260,21 @@ namespace Common.Utils
         public static string UrlEncoding(this string text)
         {
             return System.Web.HttpUtility.UrlEncode(text);
+        }
+
+        public static int WeekNumber(this DateTime date)
+        {
+            try
+            {
+                // 기준일과의 차이 계산
+                TimeSpan difference = date - CodeHelper.SeasonTheNewWave;
+
+                // 주차 계산 (0주차부터 시작하므로 +1)
+                int weekNumber = (difference.Days / 7) + 1;
+
+                return weekNumber;
+            }
+            catch { return 0; }
         }
     }
 

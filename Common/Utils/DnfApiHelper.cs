@@ -89,9 +89,10 @@ namespace Common.Utils
             }
         }
 
-        public async Task<TimeLineResult> GetTimeLineAsync(string charKey, string serverName, DateTime stDate, DateTime edDate)
+
+        public async Task<TimeLineResult> GetTimeLineAsync(string charKey, string serverNameOrId, DateTime stDate, DateTime edDate, bool isServerId = false)
         {
-            string url = $"df/servers/{CodeHelper.GetServerId(serverName)}/characters/{charKey}/timeline?limit=100&startDate={stDate.ToString("yyyy-MM-dd")}&endDate={edDate.ToString("yyyy-MM-dd HH:mm")}&code=504,505,511,513,516&apikey={apiKey}";
+            string url = $"df/servers/{(isServerId ? serverNameOrId : CodeHelper.GetServerId(serverNameOrId))}/characters/{charKey}/timeline?limit=100&startDate={stDate.ToString("yyyy-MM-dd")}&endDate={edDate.ToString("yyyy-MM-dd HH:mm")}&code=504,505,511,513,516&apikey={apiKey}";
 
             // GET 요청 보내기
             HttpResponseMessage response = await _client.GetAsync(url);

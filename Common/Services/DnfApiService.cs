@@ -19,7 +19,7 @@ namespace Common.Services
         /// <param name="userId"></param>
         /// <param name="serverName"></param>
         /// <returns></returns>
-        public static async Task<List<TimeLineItem>> GetAllTimeLineAsync(string userId, string serverName)
+        public static async Task<List<TimeLineItem>> GetAllTimeLineAsync(string userId, string serverNameOrId, bool isServerId = false)
         {
             Common.Utils.DnfApiHelper dnfApiHelper = new Common.Utils.DnfApiHelper(_dfApiUrl);
             List<TimeLineItem> list = new List<TimeLineItem>();
@@ -28,7 +28,7 @@ namespace Common.Services
             DateTime updateDate = new DateTime(2025, 1, 9);
             DateTime stDate = updateDate;
 
-            var charInfo = await dnfApiHelper.GetCharInfoAsync(userId, serverName);
+            var charInfo = await dnfApiHelper.GetCharInfoAsync(userId, serverNameOrId, isServerId);
             if (charInfo != null)
             {
                 do
@@ -39,7 +39,7 @@ namespace Common.Services
                         edDate = DateTime.Now;
                     }
 
-                    var result = await dnfApiHelper.GetTimeLineAsync(charInfo.CharacterId, serverName, stDate, edDate);
+                    var result = await dnfApiHelper.GetTimeLineAsync(charInfo.CharacterId, serverNameOrId, stDate, edDate, isServerId);
                     if (result != null)
                     {
                         Console.WriteLine($"{stDate.ToString("yyyy-MM-dd")} ~ {edDate.ToString("yyyy-MM-dd")} : {result.TimeLine?.Rows?.Count}");
