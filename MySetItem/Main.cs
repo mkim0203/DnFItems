@@ -672,6 +672,16 @@ namespace MySetItem
             List<DashboardItem> hellDashboardItems = new List<DashboardItem>();
             List<DashboardItem> allDashboardItems = new List<DashboardItem>();
 
+            StringBuilder outputHellInfos = new StringBuilder();
+            StringBuilder outputAllInfos = new StringBuilder();
+            //StringBuilder outputCharInfos = new StringBuilder();
+            StringBuilder outputCharTab = new StringBuilder();
+            StringBuilder outputCharTabContent = new StringBuilder();
+
+            StringBuilder outputAllListCountSummary = new StringBuilder();
+            StringBuilder outputListCountSummary = new StringBuilder();
+
+
             int curWeekNumber = DateTime.Now.WeekNumber();
 
             int index = 0;
@@ -682,7 +692,10 @@ namespace MySetItem
 
                 AllTimeLineSummary summary = new AllTimeLineSummary(itemTimeLine);
 
-
+                outputCharTab.AppendLine($@"<li class=""nav-item"" role=""presentation"">
+            <button class=""nav-link{(index <= 1 ? " active" : "")}"" id=""{charInfo.CharacterKey}"" data-bs-toggle=""tab"" data-bs-target=""#{charInfo.CharacterKey}-tab-pane"" type=""button"" role=""tab"" aria-controls=""{charInfo.CharacterKey}-tab-pane"" aria-selected=""{(index <= 1 ? "true": "fasle")}"">{charInfo.Name}</button>
+          </li>
+");
                 for (int i = 1; i <= curWeekNumber; i++)
                 {
                     hellDashboardItems.Add(new DashboardItem()
@@ -691,25 +704,27 @@ namespace MySetItem
                         WeekNumber = i,
                         BegCount = summary.AllBaseHellBeg.Where(x => x.WeekNumber == i).Count(),
                         EpiCount = summary.AllBaseHellEpi.Where(x => x.WeekNumber == i).Count(),
-                        LegCount = summary.AllBaseHellLeg.Where(x => x.WeekNumber == i).Count()
+                        LegCount = summary.AllBaseHellLeg.Where(x => x.WeekNumber == i).Count(),
+                        WeekTimeLineSummary = new AllTimeLineSummary(itemTimeLine.Where(x => x.WeekNumber == i).ToList())
                     });
                     allDashboardItems.Add(new DashboardItem()
                     {
                         CharName = charInfo.Name,
+                        CharKey = charInfo.CharacterKey,
                         WeekNumber = i,
                         BegCount = summary.AllBeg.Where(x => x.WeekNumber == i).Count(),
                         EpiCount = summary.AllEpi.Where(x => x.WeekNumber == i).Count(),
-                        LegCount = summary.AllLeg.Where(x => x.WeekNumber == i).Count()
+                        LegCount = summary.AllLeg.Where(x => x.WeekNumber == i).Count(),
+                        WeekTimeLineSummary = new AllTimeLineSummary(itemTimeLine.Where(x => x.WeekNumber == i).ToList())
                     });
 
                 }
             }
 
-            StringBuilder outputHellInfos = new StringBuilder();
-            StringBuilder outputAllInfos = new StringBuilder();
-            StringBuilder outputCharInfos = new StringBuilder();
 
-            for (int i = 1; i <= curWeekNumber; i++)
+
+            //for (int i = 1; i <= curWeekNumber; i++)
+            for (int i = curWeekNumber; i >= 1; i--)
             {
                 var tempHell = hellDashboardItems.Where(x => x.WeekNumber == i);
                 var tempAll = allDashboardItems.Where(x => x.WeekNumber == i);
@@ -758,25 +773,86 @@ namespace MySetItem
     <td>{allDashboardItems.Sum(x => x.TotalCount)}</td>
 </tr>");
 
-            // 캐릭터 주차별 획득정보
-            foreach(var item in allDashboardItems)
+
+
+            
+
+            
+
+            if (allDashboardItems.Count > 0)
             {
-                outputCharInfos.AppendLine($@"<tr>
-    <td>{item.CharName}</td>
-    <td>{item.WeekNumber} ({item.StartDate.ToString("yy-MM-dd HH:mm")} ~ {item.EndDate.ToString("yy-MM-dd HH:mm")})</td>
-    <td>{item.BegCount}</td>
-    <td>{item.EpiCount}</td>
-    <td>{item.LegCount}</td>
-    <td>{item.TotalCount}</td>
-</tr>");
+                outputListCountSummary.AppendLine("<div class='row'>");
+                var currentWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber).Select(x => x.WeekTimeLineSummary);
+                var beforeWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber - 1).Select(x => x.WeekTimeLineSummary);
+
+                SetListCountSummary(outputListCountSummary, currentWeek, curWeekNumber);
+                SetListCountSummary(outputListCountSummary, beforeWeek, curWeekNumber - 1);
+
+                outputListCountSummary.AppendLine("</div>");
+
+                // 전체
+                SetListCountSummary(outputAllListCountSummary, allDashboardItems.Select(x => x.WeekTimeLineSummary), null);
             }
 
+
+            // 캐릭터 주차별 획득정보
+            //            foreach (var item in allDashboardItems)
+            //            {
+            //                outputCharInfos.AppendLine($@"<tr>
+            //    <td>{item.CharName}</td>
+            //    <td>{item.WeekNumber} ({item.StartDate.ToString("yy-MM-dd HH:mm")} ~ {item.EndDate.ToString("yy-MM-dd HH:mm")})</td>
+            //    <td>{item.BegCount}</td>
+            //    <td>{item.EpiCount}</td>
+            //    <td>{item.LegCount}</td>
+            //    <td>{item.TotalCount}</td>
+            //</tr>");
+            //            }
+
+            bool tabFirst = true;
+            foreach (var item in allDashboardItems.GroupBy(x => x.CharKey))
+            {
+                outputCharTabContent.AppendLine($@"<div class=""tab-pane fade{(tabFirst ? " show active" : "")}"" id=""{item.Key}-tab-pane"" role=""tabpanel"" aria-labelledby=""{item.Key}-tab"" tabindex=""0"">
+<div class=""col-7"">");
+                outputCharTabContent.AppendLine($"<h4>{item.Sum(x => x.BegCount)} / {item.Sum(x => x.EpiCount)} / {item.Sum(x => x.LegCount)}</h4>");
+                outputCharTabContent.AppendLine(@"<table class=""table table-striped table-bordered"">
+				<thead>
+					<tr>
+						<th width=""300px;"">시즌 주차</th>
+						<th width=""80px;"">태초</th>
+						<th width=""80px;"">에픽</th>
+						<th width=""80px;"">레전더리</th>
+						<th width=""80px;"">합</th>
+					</tr>
+				</thead>
+                ");
+
+                foreach(var weekItem in item.OrderByDescending(x => x.WeekNumber))
+                {
+                    outputCharTabContent.AppendLine($@"<tr>
+    <td>{weekItem.WeekNumber} ({weekItem.StartDate.ToString("yy-MM-dd HH:mm")} ~ {weekItem.EndDate.ToString("yy-MM-dd HH:mm")})</td>
+    <td>{weekItem.BegCount}</td>
+    <td>{weekItem.EpiCount}</td>
+    <td>{weekItem.LegCount}</td>
+    <td>{weekItem.TotalCount}</td>
+</tr>");
+                }
+
+
+                outputCharTabContent.AppendLine("</table></div></div>");
+
+                tabFirst = false;
+            }
+            
 
             string htmlDoc = File.ReadAllText("layoutAdvenStat.txt");
             string outputHtml = htmlDoc
                 .Replace("{{AllDashBoardSummary}}", outputAllInfos.ToString())
                 .Replace("{{HellDashBoardSummary}}", outputHellInfos.ToString())
-                .Replace("{{CharDashBoardSummary}}", outputCharInfos.ToString())
+                //.Replace("{{CharDashBoardSummary}}", outputCharInfos.ToString())
+                .Replace("{{AllWeekSummary}}", outputAllListCountSummary.ToString())
+                .Replace("{{ListCharTab}}", outputCharTab.ToString())
+                .Replace("{{ListCharTabContent}}", outputCharTabContent.ToString())
+                .Replace("{{CurAndBeforeWeekSummary}}", outputListCountSummary.ToString())
                 .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 ;
 
@@ -793,6 +869,39 @@ namespace MySetItem
 
             lblStat.Text = "완료.";
         }
+
+
+        Action<StringBuilder, IEnumerable<AllTimeLineSummary>, int?> SetListCountSummary = (output, target, weekNumber) => {
+            output.AppendLine($"<div class='col-6'>");
+            output.AppendLine($"<h4>{(weekNumber.HasValue ? $"{weekNumber}주차" : "전체")}</h4>");
+            //<div class="col-11">
+            output.AppendLine($"<table class='table table-bordered border-primary'>");
+            output.AppendLine($@"<tr>
+    <th>구분</th>
+    <th style='width:100px'>태초</th>
+    <th style='width:100px'>에픽</th>
+    <th style='width:100px'>레전</th>
+    <th style='width:100px'>합계</th>
+</tr>");
+
+            // 전체, 헬, 심연, 상던, 레기온, 환요
+
+            output.AppendLine($"<tr><td>전체</td><td>{target.Sum(x => x.AllBeg.Count())}</td><td>{target.Sum(x => x.AllEpi.Count())}</td><td>{target.Sum(x => x.AllLeg.Count())}</td><td>{target.Sum(x => x.Datas.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>심연 : 종말</td><td>{target.Sum(x => x.AllSpHellBeg.Count())}</td><td>{target.Sum(x => x.AllSphellEpi.Count())}</td><td>{target.Sum(x => x.AllSphellLeg.Count())}</td><td>{target.Sum(x => x.AllSpHell.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>종말</td><td>{target.Sum(x => x.AllBaseHellBeg.Count())}</td><td>{target.Sum(x => x.AllBaseHellEpi.Count())}</td><td>{target.Sum(x => x.AllBaseHellLeg.Count())}</td><td>{target.Sum(x => x.AllBaseHell.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>상던</td><td>{target.Sum(x => x.AllWeeklyBeg.Count())}</td><td>{target.Sum(x => x.AllWeeklyEpi.Count())}</td><td>{target.Sum(x => x.AllWeeklyLeg.Count())}</td><td>{target.Sum(x => x.AllWeekly.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>레기온</td><td>{target.Sum(x => x.AllRegionBeg.Count())}</td><td>{target.Sum(x => x.AllRegionEpi.Count())}</td><td>{target.Sum(x => x.AllRegionLeg.Count())}</td><td>{target.Sum(x => x.AllRegion.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>환요</td><td>{target.Sum(x => x.AllDailyBeg.Count())}</td><td>{target.Sum(x => x.AllDailyEpi.Count())}</td><td>{target.Sum(x => x.AllDailyLeg.Count())}</td><td>{target.Sum(x => x.AllDaily.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>기본던전</td><td>{target.Sum(x => x.AllBaseDungeonBeg.Count())}</td><td>{target.Sum(x => x.AllBaseDungeonEpi.Count())}</td><td>{target.Sum(x => x.AllBaseDungeonLeg.Count())}</td><td>{target.Sum(x => x.AllBaseDungeon.Count())}</td></tr>");
+
+            output.AppendLine($"</table></div>");
+        };
         public async Task RunGuildAsync(string guildName)
         {
             DateTime stdt = DateTime.Now;

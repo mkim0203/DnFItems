@@ -10,7 +10,10 @@ namespace Common.Models
     public class DashboardItem
     {
         public string CharName { get; set; }
+        public string CharKey { get; set; }
         public int WeekNumber { get; set; }
+
+        public AllTimeLineSummary WeekTimeLineSummary { get; set; }
 
         public DateTime StartDate
         {
