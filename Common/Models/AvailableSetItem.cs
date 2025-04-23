@@ -19,6 +19,12 @@ namespace Common.Models
                 FusionPants = item.Pants;
                 FusionBelt = item.Belt;
                 FusionShoes = item.Shoes;
+                FusionBrac = item.Brac;
+                FusionNeck = item.Neck;
+                FusionSup = item.Sup;
+                FusionRing = item.Ring;
+                FusionEaring = item.Earing;
+                FusionSton = item.Ston;
             }
         }
 
@@ -43,12 +49,20 @@ namespace Common.Models
         public int FusionBelt { get; set; } = 0;
         public int FusionShoes { get; set; } = 0;
 
+        public int FusionBrac { get; set; } = 0;
+        public int FusionNeck { get; set; } = 0;
+        public int FusionSup { get; set; } = 0;
+        public int FusionRing { get; set; } = 0;
+        public int FusionEaring { get; set; } = 0;
+        public int FusionSton { get; set; } = 0;
+
         public int AllPoint
         {
             get
             {
                 int sum = HandAndShoulder + Coat + Pants + Belt + Shoes + Brac + Neck + Sup + Ring + Earing + Ston
                     + FusionHandAndShoulder + FusionCoat + FusionPants + FusionBelt + FusionShoes;
+                sum += FusionBrac + FusionNeck + FusionSup + FusionRing + FusionEaring + FusionSton;
                 return sum;
             }
         }
@@ -391,6 +405,12 @@ $@"<tr>
     <td class='{CodeHelper.GetFusionRarityColor(FusionPants)}'>{FusionPants}</td>
     <td class='{CodeHelper.GetFusionRarityColor(FusionBelt)}'>{FusionBelt}</td>
     <td class='{CodeHelper.GetFusionRarityColor(FusionShoes)}'>{FusionShoes}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionBrac)}'>{FusionBrac}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionNeck)}'>{FusionNeck}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionSup)}'>{FusionSup}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionRing)}'>{FusionRing}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionEaring)}'>{FusionEaring}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionSton)}'>{FusionSton}</td>
 
     <td{(IsTop ? " class='table-primary'" : "")}>{AllPoint}{(IsTop ? "(*)" : "")}</td>
     <td class='{CodeHelper.GetRarityColor(GetSetGrade(AllPoint))}'>{GetSetGrade(AllPoint)}</td>
@@ -415,6 +435,12 @@ $@"<tr>
     <td class='{CodeHelper.GetFusionRarityColor(FusionPants)}'>{FusionPants}</td>
     <td class='{CodeHelper.GetFusionRarityColor(FusionBelt)}'>{FusionBelt}</td>
     <td class='{CodeHelper.GetFusionRarityColor(FusionShoes)}'>{FusionShoes}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionBrac)}'>{FusionBrac}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionNeck)}'>{FusionNeck}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionSup)}'>{FusionSup}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionRing)}'>{FusionRing}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionEaring)}'>{FusionEaring}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(FusionSton)}'>{FusionSton}</td>
 
     <td>{MaxAllPoint}</td>
     <td class='{CodeHelper.GetRarityColor(GetSetGrade(MaxAllPoint))}'>{GetSetGrade(MaxAllPoint)}</td>

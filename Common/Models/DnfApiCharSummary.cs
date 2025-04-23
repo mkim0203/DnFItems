@@ -97,6 +97,24 @@ namespace Common.Models
                             case "벨트":
                                 retValue.Belt = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
                                 break;
+                            case "팔찌":
+                                retValue.Brac = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "목걸이":
+                                retValue.Neck = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "보조장비":
+                                retValue.Sup = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "반지":
+                                retValue.Ring = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "귀걸이":
+                                retValue.Earing = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "마법석":
+                                retValue.Ston = item.UpgradeInfo.ItemRarity == "유니크" ? 25 : 65;
+                                break;
                         }
                     }
 
@@ -175,7 +193,7 @@ namespace Common.Models
     <td>{item.Reinforce} {(string.IsNullOrWhiteSpace(item.AmplificationName) ? "강화" : "증폭")}</td>
     <td>{item.ItemName}{(item.UpgradeInfo != null ? $"<br/>({item.UpgradeInfo.ItemRarity}){item.UpgradeInfo.ItemName}" : "")}</td>
     <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td>
-    <td>{item.TuneInfo?.Level}</td>
+    <td>{item.TuneInfo?.First().Level}</td>
 </tr>";
 
                     sb.AppendLine(htmlText);
@@ -194,7 +212,7 @@ namespace Common.Models
                 foreach (var item in _equiInfos.EquipmentInfos.Where(x => x.SlotOrder >= 2).OrderBy(x => x.SlotOrder))
                 {
                     string htmlText = $@"
-    <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item?.TuneInfo?.SetPoint}{(item?.TuneInfo?.Level > 0 ? $"({item?.TuneInfo?.Level})" : "")}</td>
+    <td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item?.TuneInfo?.First().SetPoint}{(item?.TuneInfo?.First().Level > 0 ? $"({item?.TuneInfo?.First().Level})" : "")}</td>
 ";
 
                     sb.AppendLine(htmlText);
@@ -212,7 +230,14 @@ namespace Common.Models
     <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Coat)}'>{fusionItem.Coat}</td>
     <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Pants)}'>{fusionItem.Pants}</td>
     <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Belt)}'>{fusionItem.Belt}</td>
-    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Shoes)}'>{fusionItem.Shoes}</td>";
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Shoes)}'>{fusionItem.Shoes}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Brac)}'>{fusionItem.Brac}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Neck)}'>{fusionItem.Neck}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Sup)}'>{fusionItem.Sup}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Ring)}'>{fusionItem.Ring}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Earing)}'>{fusionItem.Earing}</td>
+    <td class='{CodeHelper.GetFusionRarityColor(fusionItem.Ston)}'>{fusionItem.Ston}</td>
+";
 
                 return retValue;
             }

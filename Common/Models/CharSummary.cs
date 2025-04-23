@@ -133,6 +133,25 @@ namespace Common.Models
                             case "벨트":
                                 retValue.Belt = item.FusionRarity == "유니크" ? 25 : 65;
                                 break;
+                            case "팔찌":
+                                retValue.Brac = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "목걸이":
+                                retValue.Neck = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "보조장비":
+                                retValue.Sup = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "반지":
+                                retValue.Ring = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "귀걸이":
+                                retValue.Earing = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+                            case "마법석":
+                                retValue.Ston = item.FusionRarity == "유니크" ? 25 : 65;
+                                break;
+
                         }
                     }
                     

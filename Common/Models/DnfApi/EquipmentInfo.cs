@@ -74,8 +74,11 @@ namespace Common.Models.DnfApi
 
         [JsonProperty("upgradeInfo")]
         public EquipmentUpgradeInfo UpgradeInfo { get; set; }
+        /// <summary>
+        /// 구조가 배열로 바뀜.
+        /// </summary>
         [JsonProperty("tune")]
-        public EquipmentTuneInfo TuneInfo { get; set; }
+        public List<EquipmentTuneInfo> TuneInfo { get; set; }
     }
 
     public class EquipmentTuneInfo
@@ -88,6 +91,24 @@ namespace Common.Models.DnfApi
         public int? Level { get; set; }
         [JsonProperty("setPoint")]
         public int? SetPoint { get; set; }
+        //[JsonProperty("status")]
+        //public List<TurnStatusInfo> TurnStatus { get; set; }
+
+    }
+
+    public class TurnStatusInfo
+    {
+        // 무기경우 status 있음.
+        /*
+         * "status": [
+            {
+              "name": "최종 데미지",
+              "value": "329%"
+            }
+          ]
+         */
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 
     public class EquipmentUpgradeInfo

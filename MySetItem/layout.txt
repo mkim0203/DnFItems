@@ -30,7 +30,7 @@
         border-top: 1.5px solid blue;
     }
 
-    #SetItemsInfo tbody td:nth-last-child(8) {
+    #SetItemsInfo tbody td:nth-last-child(14) {
 		border-left: 1.5px solid black;
 	}
 
@@ -132,7 +132,7 @@
                         <th rowspan="2">세트명</th>
                         <th rowspan="2">구분</th>
                         <th colspan="11">장비</th>
-                        <th colspan="5">융합석</th>
+                        <th colspan="11">융합석</th>
                         <th rowspan="2">point</th>
                         <th rowspan="2">세트등급</th>
                         <th rowspan="2">다음등급<br/>필요포인트</th>
@@ -141,6 +141,7 @@
                         <th>어깨</th><th>상의</th><th>하의</th><th>벨트</th><th>신발</th>
                         <th>팔찌</th><th>목걸이</th><th>보조장비</th><th>반지</th><th>귀걸이</th><th>마법석</th>
                         <th>어깨</th><th>상의</th><th>하의</th><th>벨트</th><th>신발</th>
+                        <th>팔찌</th><th>목걸이</th><th>보조장비</th><th>반지</th><th>귀걸이</th><th>마법석</th>
                     </tr>
                 </thead>
                 {{AvailableSetItem}}
