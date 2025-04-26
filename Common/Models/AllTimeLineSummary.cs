@@ -52,5 +52,10 @@ namespace Common.Models
         public IEnumerable<TimeLineItem> AllBaseDungeonBeg { get { return AllBaseDungeon.Where(x => x.ItemRarity.Equals("태초")); } }
         public IEnumerable<TimeLineItem> AllBaseDungeonEpi { get { return AllBaseDungeon.Where(x => x.ItemRarity.Equals("에픽")); } }
         public IEnumerable<TimeLineItem> AllBaseDungeonLeg { get { return AllBaseDungeon.Where(x => x.ItemRarity.Equals("레전더리")); } }
+
+        public IEnumerable<TimeLineItem> AllRaid { get { return Datas.Where(x => x.IsRaid); } }
+        public IEnumerable<TimeLineItem> AllRaidBeg { get { return AllRaid.Where(x => x.ItemRarity.Equals("태초")); } }
+        public IEnumerable<TimeLineItem> AllRaidEpi { get { return AllRaid.Where(x => x.ItemRarity.Equals("에픽")); } }
+        public IEnumerable<TimeLineItem> AllRaidLeg { get { return AllRaid.Where(x => x.ItemRarity.Equals("레전더리")); } }
     }
 }

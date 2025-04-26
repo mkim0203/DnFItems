@@ -260,6 +260,9 @@ namespace MySetItem
                 outputListCountSummary.AppendLine($"<tr><td>종말</td><td>{charAllItem.AllBaseHellBeg.Count()}</td><td>{charAllItem.AllBaseHellEpi.Count()}</td><td>{charAllItem.AllBaseHellLeg.Count()}</td><td>{charAllItem.AllBaseHell.Count()}</td></tr>");
                 outputListCountSummary.AppendLine($"<tr><td>상던</td><td>{charAllItem.AllWeeklyBeg.Count()}</td><td>{charAllItem.AllWeeklyEpi.Count()}</td><td>{charAllItem.AllWeeklyLeg.Count()}</td><td>{charAllItem.AllWeekly.Count()}</td></tr>");
                 outputListCountSummary.AppendLine($"<tr><td>레기온</td><td>{charAllItem.AllRegionBeg.Count()}</td><td>{charAllItem.AllRegionEpi.Count()}</td><td>{charAllItem.AllRegionLeg.Count()}</td><td>{charAllItem.AllRegion.Count()}</td></tr>");
+
+                outputListCountSummary.AppendLine($"<tr><td>레이드</td><td>{charAllItem.AllRaidBeg.Count()}</td><td>{charAllItem.AllRaidEpi.Count()}</td><td>{charAllItem.AllRaidLeg.Count()}</td><td>{charAllItem.AllRaid.Count()}</td></tr>");
+
                 outputListCountSummary.AppendLine($"<tr><td>환요</td><td>{charAllItem.AllDailyBeg.Count()}</td><td>{charAllItem.AllDailyEpi.Count()}</td><td>{charAllItem.AllDailyLeg.Count()}</td><td>{charAllItem.AllDaily.Count()}</td></tr>");
                 outputListCountSummary.AppendLine($"<tr><td>기본던전</td><td>{charAllItem.AllBaseDungeonBeg.Count()}</td><td>{charAllItem.AllBaseDungeonEpi.Count()}</td><td>{charAllItem.AllBaseDungeonLeg.Count()}</td><td>{charAllItem.AllBaseDungeon.Count()}</td></tr>");
 
@@ -341,6 +344,39 @@ namespace MySetItem
                 }
                 outputRegionItem.AppendLine($"</table></div><br/>");
             }
+            #endregion
+
+            #region 레이드
+            StringBuilder outputRaidItem = new StringBuilder();
+
+            var raidGroup = charAllItem.AllRaid
+                  .OrderByDescending(x => x.Date)
+                  .GroupBy(item => item.Date)
+                  ;
+            // 레이드 정리
+            if (raidGroup.Count() > 0)
+            {
+                outputRaidItem.AppendLine($"<h3 class='mt-5 text-center'>획득 : {charAllItem.AllRaidBeg.Count()} / {charAllItem.AllRaidEpi.Count()} / {charAllItem.AllRaidLeg.Count()}</h3>");
+            }
+
+            foreach (var raidInfo in raidGroup)
+            {
+                outputRaidItem.AppendLine($"<h4>{raidInfo.Key}</h4>");
+                //<div class="col-11">
+                outputRaidItem.AppendLine($"<div class='col-6'>");
+                outputRaidItem.AppendLine($"<table class='table table-bordered'>");
+                outputRaidItem.AppendLine($@"<tr>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:100px'>등급</th>
+    <th style='width:100px'>부위</th>
+</tr>");
+                foreach (var item in raidInfo)
+                {
+                    outputRaidItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
+                }
+                outputRaidItem.AppendLine($"</table></div><br/>");
+            } 
             #endregion
 
             #region 심연
@@ -562,6 +598,7 @@ namespace MySetItem
                     .Replace("{{CharName}}", userId)
                     .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                     .Replace("{{ListRegionItem}}", outputRegionItem.ToString())
+                    .Replace("{{ListRaidItem}}", outputRaidItem.ToString())
                     .Replace("{{ListSpHellItem}}", outputSpHellItem.ToString())
                     .Replace("{{ListCountSummary}}", outputListCountSummary.ToString())
                     .Replace("{{ListBaseHellItem}}", outputBaseHellItem.ToString())
@@ -895,6 +932,8 @@ namespace MySetItem
             output.AppendLine($"<tr><td>상던</td><td>{target.Sum(x => x.AllWeeklyBeg.Count())}</td><td>{target.Sum(x => x.AllWeeklyEpi.Count())}</td><td>{target.Sum(x => x.AllWeeklyLeg.Count())}</td><td>{target.Sum(x => x.AllWeekly.Count())}</td></tr>");
 
             output.AppendLine($"<tr><td>레기온</td><td>{target.Sum(x => x.AllRegionBeg.Count())}</td><td>{target.Sum(x => x.AllRegionEpi.Count())}</td><td>{target.Sum(x => x.AllRegionLeg.Count())}</td><td>{target.Sum(x => x.AllRegion.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>레이드</td><td>{target.Sum(x => x.AllRaidBeg.Count())}</td><td>{target.Sum(x => x.AllRaidEpi.Count())}</td><td>{target.Sum(x => x.AllRaidLeg.Count())}</td><td>{target.Sum(x => x.AllRaid.Count())}</td></tr>");
 
             output.AppendLine($"<tr><td>환요</td><td>{target.Sum(x => x.AllDailyBeg.Count())}</td><td>{target.Sum(x => x.AllDailyEpi.Count())}</td><td>{target.Sum(x => x.AllDailyLeg.Count())}</td><td>{target.Sum(x => x.AllDaily.Count())}</td></tr>");
 

@@ -261,6 +261,9 @@
             <button class="nav-link" id="region-tab" data-bs-toggle="tab" data-bs-target="#region-tab-pane" type="button" role="tab" aria-controls="region-tab-pane" aria-selected="false">레기온</button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link" id="raid-tab" data-bs-toggle="tab" data-bs-target="#raid-tab-pane" type="button" role="tab" aria-controls="raid-tab-pane" aria-selected="false">레이드</button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link" id="daily-tab" data-bs-toggle="tab" data-bs-target="#daily-tab-pane" type="button" role="tab" aria-controls="daily-tab-pane" aria-selected="false">환요</button>
           </li>
         </ul>
@@ -287,6 +290,10 @@
             <div class="tab-pane fade" id="region-tab-pane" role="tabpanel" aria-labelledby="region-tab" tabindex="0">
                 <h3 class="mt-5 text-center">베누스 획득 정보</h3>
                 {{ListRegionItem}}
+            </div>
+            <div class="tab-pane fade" id="raid-tab-pane" role="tabpanel" aria-labelledby="raid-tab" tabindex="0">
+                <h3 class="mt-5 text-center">레이드 획득 정보</h3>
+                {{ListRaidItem}}
             </div>
             <div class="tab-pane fade" id="daily-tab-pane" role="tabpanel" aria-labelledby="daily-tab" tabindex="0">
                 <h3 class="mt-5 text-center">환요 획득 정보</h3>

@@ -382,5 +382,22 @@ namespace Common.Models
                 }
             }
         }
+
+        public bool IsRaid
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(Name)) return false;
+                    bool findRaid = Name.IndexOf("레이드 카드 보상") != -1;
+                    return findRaid;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
     }
 }
