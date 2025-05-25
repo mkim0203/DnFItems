@@ -85,7 +85,8 @@ namespace Common.Models
             get
             {
                 int sum = MaxHandAndShoulder + MaxCoat + MaxPants + MaxBelt + MaxShoes + MaxBrac + MaxNeck + MaxSup + MaxRing + MaxEaring + MaxSton
-                    + FusionHandAndShoulder + FusionCoat + FusionPants + FusionBelt + FusionShoes;
+                    + FusionHandAndShoulder + FusionCoat + FusionPants + FusionBelt + FusionShoes
+                    + FusionBrac + FusionNeck + FusionSup + FusionRing + FusionEaring + FusionSton;
                 return sum;
             }
         }

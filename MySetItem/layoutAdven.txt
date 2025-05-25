@@ -35,6 +35,9 @@
 		color: #fdc500 !important;
 		font-size: 20px;
 	}
+	.table th, td {
+		padding: 3px !important;
+	}
 	</style>
 </head>
 <body>

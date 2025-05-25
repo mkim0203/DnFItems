@@ -72,7 +72,7 @@ namespace DnFItems
             DateTime updateDate = new DateTime(2025, 1, 9);
             DateTime stDate = updateDate;
 
-            var charInfo = await helper.GetCharInfoAsync("비상넨가", "디레지에");
+            var charInfo = await helper.GetCharInfoAsync(".6..........", "디레지에");
             if (charInfo != null)
             {
                 do

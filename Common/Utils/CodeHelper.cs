@@ -201,6 +201,7 @@ namespace Common.Utils
 
         public static List<string> WeeklyDungeonNames = new List<string>()
         {
+            "해방된 흉몽",
             //"죽음의 여신전",
             "침묵의 성소",
             "애쥬어 메인",
