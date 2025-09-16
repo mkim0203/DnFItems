@@ -303,6 +303,26 @@ namespace Common.Models
             }
         }
 
+        public bool IsBorderHell
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(DungeonName)) return false;
+                    // 헬던전 인지
+                    bool findDungeon = DungeonName.Equals("종말의 경계");
+                    if (findDungeon) return true;
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         public bool IsWeekly
         {
             get

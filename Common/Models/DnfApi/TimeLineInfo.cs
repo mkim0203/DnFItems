@@ -75,6 +75,7 @@ namespace Common.Models.DnfApi
         public bool? MistGear { get; set; }
 
         public string RegionName { get; set; }
+        public string RaidName { get; set; }
     }
 
     public class TimeLineSummary

@@ -252,7 +252,10 @@
             <button class="nav-link" id="sp-hell-tab" data-bs-toggle="tab" data-bs-target="#sp-hell-tab-pane" type="button" role="tab" aria-controls="sp-hell-tab-pane" aria-selected="false">심연 : 종말</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="base-hell-tab" data-bs-toggle="tab" data-bs-target="#base-hell-tab-pane" type="button" role="tab" aria-controls="base-hell-tab-pane" aria-selected="false">종말</button>
+            <button class="nav-link" id="base-hell-tab" data-bs-toggle="tab" data-bs-target="#base-hell-tab-pane" type="button" role="tab" aria-controls="base-hell-tab-pane" aria-selected="false">종말의 숭배자</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="border-hell-tab" data-bs-toggle="tab" data-bs-target="#border-hell-tab-pane" type="button" role="tab" aria-controls="border-hell-tab-pane" aria-selected="false">종말의 경계</button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="weekly-hell-tab" data-bs-toggle="tab" data-bs-target="#weekly-hell-tab-pane" type="button" role="tab" aria-controls="weekly-hell-tab-pane" aria-selected="false">상던</button>
@@ -280,8 +283,12 @@
                 {{ListSpHellItem}}
             </div>
             <div class="tab-pane fade" id="base-hell-tab-pane" role="tabpanel" aria-labelledby="base-hell-tab" tabindex="0">
-                <h3 class="mt-5 text-center">종말 획득 정보</h3>
+                <h3 class="mt-5 text-center">종말의 숭배자 획득 정보</h3>
                 {{ListBaseHellItem}}
+            </div>
+            <div class="tab-pane fade" id="border-hell-tab-pane" role="tabpanel" aria-labelledby="border-hell-tab" tabindex="0">
+                <h3 class="mt-5 text-center">종말의 경계 정보</h3>
+                {{ListBorderHellItem}}
             </div>
             <div class="tab-pane fade" id="weekly-hell-tab-pane" role="tabpanel" aria-labelledby="weekly-hell-tab" tabindex="0">
                 <h3 class="mt-5 text-center">상던 획득 정보</h3>

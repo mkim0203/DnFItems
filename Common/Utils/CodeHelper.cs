@@ -234,7 +234,14 @@ namespace Common.Utils
         public static List<string> HellDungeonNames = new List<string>()
         {
             "종말의 숭배자",
-            "심연 : 종말의 숭배자"
+            "심연 : 종말의 숭배자",
+            "종말의 경계"
+        };
+
+        public static List<string> RaidNames = new List<string>()
+        {
+            "만들어진 신 나벨",
+            "이내 황혼전"
         };
 
         public static Dictionary<string, int> SlotOrder = new Dictionary<string, int>()

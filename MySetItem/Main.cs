@@ -123,6 +123,8 @@ namespace MySetItem
 
             List<TimeLineRegion> regionTimeLine = await DnfApiService.GetAllTimeLineRegionAsync(userId, serverName);
 
+            List<TimeLineRaid> raidTimeLine = await DnfApiService.GetAllTimeLineRaidAsync(userId, serverName);
+
             AllTimeLineSummary charAllItem = new AllTimeLineSummary(itemTimeLine);
 
             Console.WriteLine("===============");
@@ -212,6 +214,20 @@ namespace MySetItem
             string spHellX = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Rarity));
             string spHellY = JsonConvert.SerializeObject(spHellGroup.Select(x => x.Count));
 
+
+            var borderHellGroup = itemTimeLine
+                   .Where(x => x.IsBorderHell)
+                   .GroupBy(item => item.ItemRarity)
+                   .Select(group => new
+                   {
+                       Rarity = group.Key,
+                       Count = group.Count()
+                   }).Take(10)
+                   .ToList();
+
+            string borderHellX = JsonConvert.SerializeObject(borderHellGroup.Select(x => x.Rarity));
+            string borderHellY = JsonConvert.SerializeObject(borderHellGroup.Select(x => x.Count));
+
             var weeklyGroup = itemTimeLine
                    .Where(x => x.IsWeekly)
                    .GroupBy(item => item.DungeonName)
@@ -221,6 +237,7 @@ namespace MySetItem
                        Count = group.Count()
                    }).Take(10)
                    .ToList();
+
 
             string weeklyX = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.DungeonName));
             string weeklyY = JsonConvert.SerializeObject(weeklyGroup.Select(x => x.Count));
@@ -257,7 +274,9 @@ namespace MySetItem
                 outputListCountSummary.AppendLine($"<tr><td>전체</td><td>{charAllItem.AllBeg.Count()}</td><td>{charAllItem.AllEpi.Count()}</td><td>{charAllItem.AllLeg.Count()}</td><td>{itemTimeLine.Count()}</td></tr>");
                 
                 outputListCountSummary.AppendLine($"<tr><td>심연 : 종말</td><td>{charAllItem.AllSpHellBeg.Count()}</td><td>{charAllItem.AllSphellEpi.Count()}</td><td>{charAllItem.AllSphellLeg.Count()}</td><td>{charAllItem.AllSpHell.Count()}</td></tr>");
-                outputListCountSummary.AppendLine($"<tr><td>종말</td><td>{charAllItem.AllBaseHellBeg.Count()}</td><td>{charAllItem.AllBaseHellEpi.Count()}</td><td>{charAllItem.AllBaseHellLeg.Count()}</td><td>{charAllItem.AllBaseHell.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>종말의 숭배자</td><td>{charAllItem.AllBaseHellBeg.Count()}</td><td>{charAllItem.AllBaseHellEpi.Count()}</td><td>{charAllItem.AllBaseHellLeg.Count()}</td><td>{charAllItem.AllBaseHell.Count()}</td></tr>");
+                outputListCountSummary.AppendLine($"<tr><td>종말의 심연</td><td>{charAllItem.AllBorderHellBeg.Count()}</td><td>{charAllItem.AllBorderHellEpi.Count()}</td><td>{charAllItem.AllBorderHellLeg.Count()}</td><td>{charAllItem.AllBorderHell.Count()}</td></tr>");
+                 
                 outputListCountSummary.AppendLine($"<tr><td>상던</td><td>{charAllItem.AllWeeklyBeg.Count()}</td><td>{charAllItem.AllWeeklyEpi.Count()}</td><td>{charAllItem.AllWeeklyLeg.Count()}</td><td>{charAllItem.AllWeekly.Count()}</td></tr>");
                 outputListCountSummary.AppendLine($"<tr><td>레기온</td><td>{charAllItem.AllRegionBeg.Count()}</td><td>{charAllItem.AllRegionEpi.Count()}</td><td>{charAllItem.AllRegionLeg.Count()}</td><td>{charAllItem.AllRegion.Count()}</td></tr>");
 
@@ -359,9 +378,28 @@ namespace MySetItem
                 outputRaidItem.AppendLine($"<h3 class='mt-5 text-center'>획득 : {charAllItem.AllRaidBeg.Count()} / {charAllItem.AllRaidEpi.Count()} / {charAllItem.AllRaidLeg.Count()}</h3>");
             }
 
-            foreach (var raidInfo in raidGroup)
+            //            foreach (var raidInfo in raidGroup)
+            //            {
+            //                outputRaidItem.AppendLine($"<h4>{raidInfo.Key}</h4>");
+            //                //<div class="col-11">
+            //                outputRaidItem.AppendLine($"<div class='col-6'>");
+            //                outputRaidItem.AppendLine($"<table class='table table-bordered'>");
+            //                outputRaidItem.AppendLine($@"<tr>
+            //    <th style='width:40px'>item</th>
+            //    <th>이름</th>
+            //    <th style='width:100px'>등급</th>
+            //    <th style='width:100px'>부위</th>
+            //</tr>");
+            //                foreach (var item in raidInfo)
+            //                {
+            //                    outputRaidItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
+            //                }
+            //                outputRaidItem.AppendLine($"</table></div><br/>");
+            //            } 
+
+            foreach (var raid in raidTimeLine.OrderByDescending(x => x.Date))
             {
-                outputRaidItem.AppendLine($"<h4>{raidInfo.Key}</h4>");
+                outputRaidItem.AppendLine($"<h4>클리어 : {raid.Date} / {raid.RaidName}</h4>");
                 //<div class="col-11">
                 outputRaidItem.AppendLine($"<div class='col-6'>");
                 outputRaidItem.AppendLine($"<table class='table table-bordered'>");
@@ -371,12 +409,12 @@ namespace MySetItem
     <th style='width:100px'>등급</th>
     <th style='width:100px'>부위</th>
 </tr>");
-                foreach (var item in raidInfo)
+                foreach (var item in charAllItem.AllRaid.Where(x => x.Date == raid.Date))
                 {
                     outputRaidItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td></tr>");
                 }
                 outputRaidItem.AppendLine($"</table></div><br/>");
-            } 
+            }
             #endregion
 
             #region 심연
@@ -446,6 +484,43 @@ namespace MySetItem
                     outputBaseHellItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
                 }
                 outputBaseHellItem.AppendLine($"</table></div><br/>");
+            }
+            #endregion
+
+            #region 헬 경계
+            
+            var borderHellGroup2 = charAllItem.AllBorderHell
+                    .OrderByDescending(x => x.Date)
+                    .GroupBy(item => item.DateDay)
+                    ;
+            StringBuilder outputBorderHellItem = new StringBuilder();
+
+            if (borderHellGroup2.Count() > 0)
+            {
+                outputBorderHellItem.AppendLine($"<h3 class='mt-5 text-center'> 획득 : {charAllItem.AllBorderHellBeg.Count()} / {charAllItem.AllBorderHellEpi.Count()} / {charAllItem.AllBorderHellLeg.Count()}</h3>");
+            }
+
+            foreach (var borderHell in borderHellGroup2)
+            {
+                outputBorderHellItem.AppendLine($"<h4>{borderHell.Key}</h4>");
+                //<div class="col-11">
+                outputBorderHellItem.AppendLine($"<div class='col-11'>");
+                outputBorderHellItem.AppendLine($"<table class='table table-bordered'>");
+                outputBorderHellItem.AppendLine($@"<tr>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:100px'>등급</th>
+    <th style='width:100px'>부위</th>
+    <th style='width:190px'>채널</th>
+    <th style='width:190px'>던전</th>
+    <th style='width:220px'>획득 방법</th>
+    <th style='width:150px'>획득 일</th>
+</tr>");
+                foreach (var item in borderHell)
+                {
+                    outputBorderHellItem.AppendLine($"<tr><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
+                }
+                outputBorderHellItem.AppendLine($"</table></div><br/>");
             }
             #endregion
 
@@ -593,6 +668,8 @@ namespace MySetItem
                     .Replace("{{HellY}}", hellY)
                     .Replace("{{SpHellX}}", spHellX)
                     .Replace("{{SpHellY}}", spHellY)
+                    .Replace("{{BorderHellX}}", borderHellX)
+                    .Replace("{{BorderHellY}}", borderHellY)
                     .Replace("{{WeeklyX}}", weeklyX)
                     .Replace("{{WeeklyY}}", weeklyY)
                     .Replace("{{CharName}}", userId)
@@ -602,6 +679,7 @@ namespace MySetItem
                     .Replace("{{ListSpHellItem}}", outputSpHellItem.ToString())
                     .Replace("{{ListCountSummary}}", outputListCountSummary.ToString())
                     .Replace("{{ListBaseHellItem}}", outputBaseHellItem.ToString())
+                    .Replace("{{ListBorderHellItem}}", outputBorderHellItem.ToString())
                     .Replace("{{ListWeeklyItem}}", outputWeeklyItem.ToString())
                     .Replace("{{ListDailyItem}}", outputDailyItem.ToString())
                     ;
@@ -718,6 +796,8 @@ namespace MySetItem
             StringBuilder outputAllListCountSummary = new StringBuilder();
             StringBuilder outputListCountSummary = new StringBuilder();
 
+            StringBuilder ouputWeekNumberTab = new StringBuilder();
+            StringBuilder ouputWeekNumberTabContent = new StringBuilder();
 
             int curWeekNumber = DateTime.Now.WeekNumber();
 
@@ -757,7 +837,6 @@ namespace MySetItem
 
                 }
             }
-
 
 
             //for (int i = 1; i <= curWeekNumber; i++)
@@ -812,20 +891,58 @@ namespace MySetItem
 
 
 
-            
 
-            
+
+            for (int i = curWeekNumber; i >= 1; i--)
+            {
+                ouputWeekNumberTab.AppendLine($@"<li class=""nav-item"" role=""presentation"">
+    <button class=""nav-link{(i == curWeekNumber ? " active" : "")}"" id=""weeknumber-{i}"" data-bs-toggle=""tab"" data-bs-target=""#weeknumber-{i}-tab-pane"" type=""button"" role=""tab"" aria-controls=""weeknumber-{i}-tab-pane"" aria-selected=""{(i == curWeekNumber ? "true" : "fasle")}"">{i}
+    </button>
+</li>");
+
+                ouputWeekNumberTabContent.AppendLine($@"<div class=""tab-pane fade{(i == curWeekNumber ? " show active" : "")}"" id=""weeknumber-{i}-tab-pane"" role=""tabpanel"" aria-labelledby=""weeknumber-{i}-tab"" tabindex=""0"">
+<div>");
+                SetListCountSummary(ouputWeekNumberTabContent, allDashboardItems.Where(x => x.WeekNumber == i).Select(x => x.WeekTimeLineSummary), i);
+
+                ouputWeekNumberTabContent.AppendLine("<h3>태초 획득 정보</h3>");
+                ouputWeekNumberTabContent.AppendLine($"<div class='col-11'>");
+                ouputWeekNumberTabContent.AppendLine($"<table class='table table-bordered item-beg'>");
+                ouputWeekNumberTabContent.AppendLine($@"<tr>
+    <th style='width:100px'>캐릭터명</th>
+    <th style='width:40px'>item</th>
+    <th>이름</th>
+    <th style='width:80px'>등급</th>
+    <th style='width:80px'>부위</th>
+    <th style='width:150px'>채널</th>
+    <th style='width:150px'>던전</th>
+    <th style='width:220px'>획득 방법</th>
+    <th style='width:150px'>획득 일</th>
+</tr>");
+                foreach (var userBegInfo in allDashboardItems.Where(x => x.WeekNumber == i && x.WeekTimeLineSummary.AllBeg.Count() > 0))
+                {
+                    foreach (var item in userBegInfo.WeekTimeLineSummary.AllBeg)
+                    {
+                        ouputWeekNumberTabContent.AppendLine($"<tr><td>{userBegInfo.CharName}</td><td><img width='28px' height='28px' src='https://img-api.neople.co.kr/df/items/{item.ItemId}'></td><td>{item.ItemName}</td><td class='{CodeHelper.GetRarityColor(item.ItemRarity)}'>{item.ItemRarity}</td><td>{item.Slot}</td><td>{item.GetChannelInfo}</td><td>{item.DungeonName}</td><td>{item.Name}</td><td>{item.Date}</td></tr>");
+                    }
+                }
+                ouputWeekNumberTabContent.AppendLine($"</table></div><br/>");
+
+                
+                ouputWeekNumberTabContent.AppendLine("</div></div>");
+                
+            }
+
 
             if (allDashboardItems.Count > 0)
             {
-                outputListCountSummary.AppendLine("<div class='row'>");
-                var currentWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber).Select(x => x.WeekTimeLineSummary);
-                var beforeWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber - 1).Select(x => x.WeekTimeLineSummary);
+                //outputListCountSummary.AppendLine("<div class='row'>");
+                //var currentWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber).Select(x => x.WeekTimeLineSummary);
+                //var beforeWeek = allDashboardItems.Where(x => x.WeekNumber == curWeekNumber - 1).Select(x => x.WeekTimeLineSummary);
 
-                SetListCountSummary(outputListCountSummary, currentWeek, curWeekNumber);
-                SetListCountSummary(outputListCountSummary, beforeWeek, curWeekNumber - 1);
+                //SetListCountSummary(outputListCountSummary, currentWeek, curWeekNumber);
+                //SetListCountSummary(outputListCountSummary, beforeWeek, curWeekNumber - 1);
 
-                outputListCountSummary.AppendLine("</div>");
+                //outputListCountSummary.AppendLine("</div>");
 
                 // 전체
                 SetListCountSummary(outputAllListCountSummary, allDashboardItems.Select(x => x.WeekTimeLineSummary), null);
@@ -889,7 +1006,9 @@ namespace MySetItem
                 .Replace("{{AllWeekSummary}}", outputAllListCountSummary.ToString())
                 .Replace("{{ListCharTab}}", outputCharTab.ToString())
                 .Replace("{{ListCharTabContent}}", outputCharTabContent.ToString())
-                .Replace("{{CurAndBeforeWeekSummary}}", outputListCountSummary.ToString())
+                .Replace("{{ListWeekNumberTab}}", ouputWeekNumberTab.ToString())
+                .Replace("{{ListWeekNumberTabContent}}", ouputWeekNumberTabContent.ToString())
+                //.Replace("{{CurAndBeforeWeekSummary}}", outputListCountSummary.ToString())
                 .Replace("{{SearchTime}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 ;
 
@@ -927,7 +1046,10 @@ namespace MySetItem
 
             output.AppendLine($"<tr><td>심연 : 종말</td><td>{target.Sum(x => x.AllSpHellBeg.Count())}</td><td>{target.Sum(x => x.AllSphellEpi.Count())}</td><td>{target.Sum(x => x.AllSphellLeg.Count())}</td><td>{target.Sum(x => x.AllSpHell.Count())}</td></tr>");
 
-            output.AppendLine($"<tr><td>종말</td><td>{target.Sum(x => x.AllBaseHellBeg.Count())}</td><td>{target.Sum(x => x.AllBaseHellEpi.Count())}</td><td>{target.Sum(x => x.AllBaseHellLeg.Count())}</td><td>{target.Sum(x => x.AllBaseHell.Count())}</td></tr>");
+            output.AppendLine($"<tr><td>종말의 숭배자</td><td>{target.Sum(x => x.AllBaseHellBeg.Count())}</td><td>{target.Sum(x => x.AllBaseHellEpi.Count())}</td><td>{target.Sum(x => x.AllBaseHellLeg.Count())}</td><td>{target.Sum(x => x.AllBaseHell.Count())}</td></tr>");
+
+            output.AppendLine($"<tr><td>종말의 경계</td><td>{target.Sum(x => x.AllBorderHellBeg.Count())}</td><td>{target.Sum(x => x.AllBorderHellEpi.Count())}</td><td>{target.Sum(x => x.AllBorderHellLeg.Count())}</td><td>{target.Sum(x => x.AllBorderHell.Count())}</td></tr>");
+
 
             output.AppendLine($"<tr><td>상던</td><td>{target.Sum(x => x.AllWeeklyBeg.Count())}</td><td>{target.Sum(x => x.AllWeeklyEpi.Count())}</td><td>{target.Sum(x => x.AllWeeklyLeg.Count())}</td><td>{target.Sum(x => x.AllWeekly.Count())}</td></tr>");
 

@@ -30,6 +30,10 @@
 		border-left: 1.5px solid black;
 	}
 
+	table.item-beg td {
+		font-size: 13px;
+	}
+
 	.dfmax-logo {
 		font-family: 'Roboto', sans-serif;
 		color: #fdc500 !important;
@@ -66,9 +70,18 @@
 
 		<br/>
 		<br/>
+		<!--
 		<h3>이번주, 전주 획득 정보</h3>
 		{{CurAndBeforeWeekSummary}}
-		
+		-->
+
+		<h3>주차 획득 정보</h3>
+		<ul class="nav nav-tabs" id="weekNumberTab" role="tablist">
+          {{ListWeekNumberTab}}
+        </ul>
+		<div class="tab-content" id="weekNumberTabContent">
+          {{ListWeekNumberTabContent}}
+        </div>
 		<br/>
 		<br/>
 

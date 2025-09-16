@@ -101,5 +101,44 @@ namespace Common.Services
 
             return list.Where(x => x.Code == 209 && x.RegionName.Equals("베누스")).ToList();
         }
+
+        public static async Task<List<TimeLineRaid>> GetAllTimeLineRaidAsync(string userId, string serverName)
+        {
+            Common.Utils.DnfApiHelper dnfApiHelper = new Common.Utils.DnfApiHelper(_dfApiUrl);
+            List<TimeLineRaid> list = new List<TimeLineRaid>();
+
+            // 중천 update 일자
+            DateTime updateDate = new DateTime(2025, 1, 9);
+            DateTime stDate = updateDate;
+
+            var charInfo = await dnfApiHelper.GetCharInfoAsync(userId, serverName);
+            if (charInfo != null)
+            {
+                do
+                {
+                    // 클리어 정보는 1달치 조회
+                    DateTime edDate = stDate.AddMonths(1);
+                    if (edDate > DateTime.Now)
+                    {
+                        edDate = DateTime.Now;
+                    }
+
+                    var result = await dnfApiHelper.GetTimeLineRaidAsync(charInfo.CharacterId, serverName, stDate, edDate);
+                    if (result != null)
+                    {
+                        Console.WriteLine($"{stDate.ToString("yyyy-MM-dd")} ~ {edDate.ToString("yyyy-MM-dd")} : {result.TimeLine?.Rows?.Count}");
+                        foreach (var item in result.TimeLine.Rows)
+                        {
+                            //Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.DungeonName} / {item.Data.ItemRarity} / {item.Data.ChannelName} / {item.Data.ChannelNo} / {item.Data.ItemName}");
+                            list.Add(new TimeLineRaid().SetData(item));
+                        }
+                    }
+
+                    stDate = edDate;
+                } while (stDate < DateTime.Today);
+            }
+
+            return list.Where(x => (x.Code == 201 || x.Code == 210) && CodeHelper.RaidNames.Contains(x.RaidName)).ToList();
+        }
     }
 }

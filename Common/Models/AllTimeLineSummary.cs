@@ -33,6 +33,12 @@ namespace Common.Models
         public IEnumerable<TimeLineItem> AllSphellEpi { get { return AllSpHell.Where(x => x.ItemRarity.Equals("에픽")); } }
         public IEnumerable<TimeLineItem> AllSphellLeg { get { return AllSpHell.Where(x => x.ItemRarity.Equals("레전더리")); } }
 
+
+        public IEnumerable<TimeLineItem> AllBorderHell { get { return Datas.Where(x => x.IsBorderHell); } }
+        public IEnumerable<TimeLineItem> AllBorderHellBeg { get { return AllBorderHell.Where(x => x.ItemRarity.Equals("태초")); } }
+        public IEnumerable<TimeLineItem> AllBorderHellEpi { get { return AllBorderHell.Where(x => x.ItemRarity.Equals("에픽")); } }
+        public IEnumerable<TimeLineItem> AllBorderHellLeg { get { return AllBorderHell.Where(x => x.ItemRarity.Equals("레전더리")); } }
+
         public IEnumerable<TimeLineItem> AllWeekly { get { return Datas.Where(x => x.IsWeekly); } }
         public IEnumerable<TimeLineItem> AllWeeklyBeg { get { return AllWeekly.Where(x => x.ItemRarity.Equals("태초")); } }
         public IEnumerable<TimeLineItem> AllWeeklyEpi { get { return AllWeekly.Where(x => x.ItemRarity.Equals("에픽")); } }

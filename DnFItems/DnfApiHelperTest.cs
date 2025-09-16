@@ -47,9 +47,9 @@ namespace DnFItems
         public async Task GetTimeLineTest()
         {
             DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
-            DateTime stDate = DateTime.Now.AddDays(-7);
+            DateTime stDate = DateTime.Now.AddDays(-14);
             DateTime edDate = DateTime.Now;
-            var charInfo = await helper.GetCharInfoAsync("비상넨가", "디레지에");
+            var charInfo = await helper.GetCharInfoAsync("비상승창", "디레지에");
             if (charInfo != null)
             {
                 var result = await helper.GetTimeLineAsync(charInfo.CharacterId, "디레지에", stDate, edDate);
@@ -57,7 +57,7 @@ namespace DnFItems
                 {
                     foreach (var item in result.TimeLine.Rows)
                     {
-                        Console.WriteLine($"{item.Name} {item.Data.DungeonName} {item.Data.ItemRarity} {item.Data.ChannelName} {item.Data.ItemName}");
+                        Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.DungeonName} / {item.Data.ItemRarity} / {item.Data.ChannelName} / {item.Data.ChannelNo} / {item.Data.ItemName}");
                     }
                 }
             }
@@ -262,6 +262,41 @@ namespace DnFItems
                         foreach (var item in result.TimeLine.Rows)
                         {
                             Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.RegionName}");
+                        }
+                    }
+
+                    stDate = edDate.AddDays(1);
+                } while (stDate < DateTime.Today);
+            }
+        }
+
+        [TestMethod]
+        public async Task GetAllTimeLineRaidTest()
+        {
+            DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
+
+            // 중천 update 일자
+            DateTime updateDate = new DateTime(2025, 1, 9);
+            DateTime stDate = updateDate;
+
+            var charInfo = await helper.GetCharInfoAsync("비상넨가", "디레지에");
+            if (charInfo != null)
+            {
+                do
+                {
+                    DateTime edDate = stDate.AddMonths(1);
+                    if (edDate > DateTime.Now)
+                    {
+                        edDate = DateTime.Now;
+                    }
+
+                    var result = await helper.GetTimeLineRaidAsync(charInfo.CharacterId, "디레지에", stDate, edDate);
+                    if (result != null)
+                    {
+                        Console.WriteLine($"{stDate.ToString("yyyy-MM-dd")} ~ {edDate.ToString("yyyy-MM-dd")} : {result.TimeLine?.Rows?.Count}");
+                        foreach (var item in result.TimeLine.Rows)
+                        {
+                            Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.RaidName}");
                         }
                     }
 
