@@ -57,6 +57,47 @@ namespace Common.Services
             return list.Where(x => x.IsLv115Item).ToList();
         }
 
+        public static async Task<List<TimeLinePledgeItem>> GetAllPledgeTimeLineAsync(string userId, string serverNameOrId, bool isServerId = false)
+        {
+            Common.Utils.DnfApiHelper dnfApiHelper = new Common.Utils.DnfApiHelper(_dfApiUrl);
+            List<TimeLinePledgeItem> list = new List<TimeLinePledgeItem>();
+
+            // 천해천 일자
+            DateTime updateDate = PledgeCodeHelper.Season11;
+            DateTime stDate = updateDate;
+            DateTime requestDate = DateTime.Now;
+
+            var charInfo = await dnfApiHelper.GetCharInfoAsync(userId, serverNameOrId, isServerId);
+            if (charInfo != null)
+            {
+                do
+                {
+                    DateTime edDate = stDate.AddDays(7);
+                    if (edDate > requestDate)
+                    {
+                        edDate = requestDate;
+                    }
+
+                    var result = await dnfApiHelper.GetPledgeTimeLineAsync(charInfo.CharacterId, serverNameOrId, stDate, edDate, isServerId);
+                    if (result != null)
+                    {
+                        Console.WriteLine($"{stDate.ToString("yyyy-MM-dd")} ~ {edDate.ToString("yyyy-MM-dd")} : {result.TimeLine?.Rows?.Count}");
+                        foreach (var item in result.TimeLine.Rows)
+                        {
+                            //Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.DungeonName} / {item.Data.ItemRarity} / {item.Data.ChannelName} / {item.Data.ChannelNo} / {item.Data.ItemName}");
+                            TimeLinePledgeItem temp = new TimeLinePledgeItem().SetData(item);
+                            
+                            list.Add(temp);
+                        }
+                    }
+
+                    stDate = edDate;
+                } while (stDate < requestDate);
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// 타임라인 - 레기온 클리어 정보
         /// </summary>

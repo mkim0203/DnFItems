@@ -50,7 +50,7 @@ namespace Common.Utils
             // 결과 출력
             Console.WriteLine("응답 상태 코드: " + response.StatusCode);
             //Console.WriteLine("응답 본문:\n" + responseBody);
-            return ExtractCharacterData(responseBody);
+            return ExtractCharacterData2(responseBody);
 
         }
 
@@ -124,5 +124,76 @@ namespace Common.Utils
             return characterList;
         }
 
+        private List<CharacterInfo> ExtractCharacterData2(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var characterList = new List<CharacterInfo>();
+
+            var charObjects = doc.DocumentNode.SelectNodes("//div[contains(@class, 'ease-out')]");
+
+            if (charObjects == null)
+                return characterList;
+
+            foreach (var charObject in charObjects)
+            {
+                var anchor = charObject.SelectSingleNode(".//a[contains(@href, '/characters/')]");
+                var nameNode = charObject.SelectSingleNode(".//p[contains(@class, 'font-bold')]");
+                var fameNode = charObject.SelectSingleNode(".//p[contains(@class, 'adaptive-fame-color')]");
+                //var damageNode = charObject.SelectSingleNode(".//p[contains(@class, 'font-semibold')]");
+                HtmlNode damageNode = null;
+                //var buffNode = charObject.SelectSingleNode(".//span[contains(@class, 'buff-score')]");
+                HtmlNode buffNode = null;
+
+                if (anchor != null && nameNode != null && fameNode != null)
+                {
+                    string href = anchor.GetAttributeValue("href", "");
+                    string[] parts = href.Split('/');
+
+                    if (parts.Length >= 4)
+                    {
+                        string server = parts[2];  // "/character/{서버}/{user key}" 구조
+                        string userKey = parts[3];
+                        string name = nameNode.InnerText.Trim();
+                        int? fame = null;
+                        try
+                        {
+                            if (fameNode == null) fame = null;
+                            else fame = Convert.ToInt32(fameNode.InnerText.Replace(",", ""));
+                        }
+                        catch { fame = null; }
+
+                        long? damege = null;
+                        try
+                        {
+                            if (damageNode == null) damege = null;
+                            else damege = Convert.ToInt64(damageNode?.InnerText);
+                        }
+                        catch { damege = null; }
+
+                        long? buff = null;
+                        try
+                        {
+                            if (buffNode == null) buff = null;
+                            else buff = Convert.ToInt64(buffNode?.InnerText);
+                        }
+                        catch { buff = null; }
+
+                        characterList.Add(new CharacterInfo
+                        {
+                            ServerId = server,
+                            CharacterKey = userKey,
+                            Name = name,
+                            Fame = fame,
+                            Damage = damege,
+                            Buff = buff
+                        });
+                    }
+                }
+            }
+
+            return characterList;
+        }
     }
 }

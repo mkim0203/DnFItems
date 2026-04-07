@@ -1,0 +1,80 @@
+
+<div class="container mt-4">
+    <h3 class="text-center">{{CharInfo}}</h3>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a href="https://dfmax.xyz/character/{{ServerId}}/{{CharKey}}" class="btn btn-warning w-100" target="_blank">DFMAX 링크</a>
+        </div>
+        <div class="col-md-4">
+            <a href="https://dundam.xyz/character?server={{ServerId}}&key={{CharKey}}" class="btn btn-primary w-100" target="_blank">DUNDAM 링크</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="card mt-4 shadow-sm col-md-8">
+            <div class="row g-0">
+                <div class="col-md-3 text-center p-3">
+                    <img src="https://img-api.neople.co.kr/df/servers/{{ServerId}}/characters/{{CharKey}}/" class="img-fluid rounded" alt="캐릭터 이미지">
+                    <p class="mt-2">{{CharSummary}}</p>
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <h5 class="card-title">{{UseItemTitleSummary}}</h5>
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>아이템</th>
+                                    <th>장비</th>
+                                    <th>강화/증폭</th>
+                                    <th>이름</th>
+                                    <th>등급</th>
+                                    <th>조율</th>
+                                </tr>
+                            </thead>
+                            {{UseItemSummary}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mt-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{UseOathTitleSummary}}</h5>
+                    {{UsePledgeItemSummary}}
+                </div>
+            </div>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>세트명</th>
+                            <th>서약등급</th>
+                            <th>태초</th>
+                            <th>에픽</th>
+                            <th>레전더리</th>
+                            <th>고유</th>
+                        
+                        </tr>
+                    
+                    </thead>
+                    {{PledgeSummary}}
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <h3 class="mt-5 text-center">서약 세트별 획득 정보</h3>
+    <h5 class="text-center text-muted">타임라인 조회시 일부 정보 누락으로 다를수 있음</h5>
+    
+    <div class="table-responsive mt-4">
+        {{ListSetItem}}
+    </div>
+
+    
+    <br/>
+    <br/>
+</div>

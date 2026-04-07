@@ -213,10 +213,10 @@ namespace Common.Models.DnfApi
         public int Max { get; set; }
     }
 
-        /// <summary>
-        /// 장비 아이템 정보
-        /// </summary>
-        public class EquipmentResult : CharInfo
+    /// <summary>
+    /// 장비 아이템 정보
+    /// </summary>
+    public class EquipmentResult : CharInfo
     {
         /*
             "adventureName": "이건머임s",

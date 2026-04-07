@@ -44,6 +44,27 @@ namespace DnFItems
         }
 
         [TestMethod]
+        public async Task GetCharOathTest()
+        {
+            DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
+            var charInfo = await helper.GetCharInfoAsync("비상넨가", "디레지에");
+            if (charInfo != null)
+            {
+                var result = await helper.GetCharOathAsync(charInfo.CharacterId, "디레지에");
+                if (result != null)
+                {
+                    Console.WriteLine($"{result.Oath.SetInfo.SetName} - {result.Oath.SetInfo.SetOptionName} - {result.Oath.SetInfo.SetRarityName}");
+                    Console.WriteLine($"{result.Oath.Info.ItemName} - {result.Oath.Info.ItemRarity}");
+                    foreach (var crystal in result.Oath.Crystal)
+                    {
+                        Console.WriteLine($"Crystal {crystal.SlotNo} : {crystal.ItemName} ({crystal.ItemRarity}) / Tune {crystal.Tune.Level} ({crystal.Tune.SetPoint} SetPoint)");
+                    }
+                    Console.WriteLine(result.Oath.SetInfo.SetPoint);
+                }
+            }
+        }
+
+        [TestMethod]
         public async Task GetTimeLineTest()
         {
             DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
@@ -58,6 +79,29 @@ namespace DnFItems
                     foreach (var item in result.TimeLine.Rows)
                     {
                         Console.WriteLine($"[{item.Date}] {item.Name} / {item.Data.DungeonName} / {item.Data.ItemRarity} / {item.Data.ChannelName} / {item.Data.ChannelNo} / {item.Data.ItemName}");
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task GetPledgeTimeLineTest()
+        {
+            DnfApiHelper helper = new DnfApiHelper("https://api.neople.co.kr");
+            DateTime stDate = new DateTime(2026, 3, 26, 6, 0, 0);
+            DateTime edDate = DateTime.Now;
+            var charInfo = await helper.GetCharInfoAsync(".6..........", "디레지에");
+            if (charInfo != null)
+            {
+                var result = await helper.GetPledgeTimeLineAsync(charInfo.CharacterId, "디레지에", stDate, edDate);
+                if (result != null)
+                {
+                    foreach (var item in result.TimeLine.Rows)
+                    {
+                        if (item.Code == 554) {
+                            Console.WriteLine("제작서");
+                        }
+                        Console.WriteLine($"[{item.Date}] {item.Code} / {item.Name} / {item.Data.DungeonName} / {item.Data.ItemRarity} / {item.Data.ChannelName} / {item.Data.ChannelNo} / {item.Data.ItemName}");
                     }
                 }
             }
@@ -332,6 +376,27 @@ namespace DnFItems
             foreach(var item in hellDashboardItems)
             {
                 Console.WriteLine(item.ToString());
+            }
+
+        }
+
+        [TestMethod]
+        public async Task 헬기준_서약_아이템_획득정보()
+        {
+            List<TimeLinePledgeItem> itemTimeLine = await DnfApiService.GetAllPledgeTimeLineAsync(".6..........", "디레지에");
+
+            foreach(var item in itemTimeLine)
+            {
+                Console.WriteLine($"{item.Date} {item.Code} / {item.Name} / {item.SetItemName} / {item.ItemName} / {item.ItemRarity} / {item.GetChannelInfo}");
+            }
+
+            Console.WriteLine("--------");
+
+            PledgeSummary summary = new PledgeSummary(itemTimeLine);
+
+            foreach(var item in summary.SummaryInfo)
+            {
+                Console.WriteLine($"{item.Name} / {item.PledgeRarity} / {item.BegCount} / {item.EpiCount} / {item.LegCount} / {item.Session10LegCount}");
             }
 
         }

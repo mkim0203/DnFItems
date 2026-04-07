@@ -65,10 +65,13 @@
     <Compile Include="Models\DnfApi\CharInfo.cs" />
     <Compile Include="Models\DnfApi\EquipmentInfo.cs" />
     <Compile Include="Models\DnfApi\ItemInfo.cs" />
+    <Compile Include="Models\DnfApi\OathInfo.cs" />
     <Compile Include="Models\DnfApi\TimeLineInfo.cs" />
     <Compile Include="Models\FusionItem.cs" />
     <Compile Include="Models\ICharSummary.cs" />
+    <Compile Include="Models\PledgeSummary.cs" />
     <Compile Include="Models\TimeLineItem.cs" />
+    <Compile Include="Models\TimeLinePledgeItem.cs" />
     <Compile Include="Models\TimeLineRaid.cs" />
     <Compile Include="Models\TimeLineRegion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +83,7 @@
     <Compile Include="Utils\DnfApiHelper.cs" />
     <Compile Include="Utils\GithubHelper.cs" />
     <Compile Include="Utils\HttpClientHelper.cs" />
+    <Compile Include="Utils\PledgeCodeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ItemDatas\SetItem.json">

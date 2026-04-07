@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySetItem", "MySetItem\MySetItem.csproj", "{49D3502E-D09C-42B3-8351-B608D6CEB849}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPledgeSetItem", "MyPledgeSetItem\MyPledgeSetItem.csproj", "{D21D2BA4-B6F8-4CB4-BDF2-53337E59EAC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{49D3502E-D09C-42B3-8351-B608D6CEB849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49D3502E-D09C-42B3-8351-B608D6CEB849}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49D3502E-D09C-42B3-8351-B608D6CEB849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21D2BA4-B6F8-4CB4-BDF2-53337E59EAC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21D2BA4-B6F8-4CB4-BDF2-53337E59EAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21D2BA4-B6F8-4CB4-BDF2-53337E59EAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21D2BA4-B6F8-4CB4-BDF2-53337E59EAC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
